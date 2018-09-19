@@ -25,8 +25,8 @@ call plug#begin('~/.vim/plugged')
 "Plug 'nsf/gocode', { 'tag': 'v.20150303', 'rtp': 'vim' }
 
 " Plugin outside ~/.vim/plugged with post-update hook
-"Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
-Plug 'junegunn/fzf'
+Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
+"Plug 'junegunn/fzf'
 Plug 'junegunn/fzf.vim'
 
 Plug 'mileszs/ack.vim'
@@ -51,6 +51,12 @@ Plug 'martinda/Jenkinsfile-vim-syntax'
 
 Plug 'nvie/vim-flake8'
 
+Plug 'scrooloose/nerdtree'
+
+Plug 'tpope/vim-surround'
+
+Plug 'google/vim-jsonnet'
+
 " Initialize plugin system
 call plug#end()
 
@@ -59,6 +65,7 @@ call plug#end()
 set nocompatible
 
 set number
+set relativenumber
 
 let g:rehash256 = 1
 let g:molokai_original = 1
@@ -77,7 +84,7 @@ set updatetime=250
 " lightline
 set laststatus=2
 
-nmap ; :Buffers<CR>
+nmap <Leader>; :Buffers<CR>
 nmap <Leader>t :Files<CR>
 nmap <Leader>r :Tags<CR>
 
@@ -148,3 +155,20 @@ nnoremap <leader>y :YcmForceCompileAndDiagnostics<cr>
 nnoremap <leader>g :YcmCompleter GoTo<CR>
 nnoremap <leader>pd :YcmCompleter GoToDefinition<CR>
 nnoremap <leader>pc :YcmCompleter GoToDeclaration<CR>
+
+nmap <Esc>1    :NERDTreeToggle<CR>
+
+let g:fzf_colors =
+\ { 'fg':      ['fg', 'Normal'],
+  \ 'bg':      ['bg', 'Normal'],
+  \ 'hl':      ['fg', 'Comment'],
+  \ 'fg+':     ['fg', 'CursorLine', 'CursorColumn', 'Normal'],
+  \ 'bg+':     ['bg', 'CursorLine', 'CursorColumn'],
+  \ 'hl+':     ['fg', 'Statement'],
+  \ 'info':    ['fg', 'PreProc'],
+  \ 'border':  ['fg', 'Ignore'],
+  \ 'prompt':  ['fg', 'Conditional'],
+  \ 'pointer': ['fg', 'Exception'],
+  \ 'marker':  ['fg', 'Keyword'],
+  \ 'spinner': ['fg', 'Label'],
+  \ 'header':  ['fg', 'Comment'] }
