@@ -41,7 +41,7 @@ Plug 'itchyny/lightline.vim'
 
 Plug 'valloric/youcompleteme'
 
-Plug 'fatih/vim-go', { 'do': ':GoInstallBinaries' }
+Plug 'fatih/vim-go', { 'do': ':GoUpdateBinaries' }
 
 Plug 'pearofducks/ansible-vim'
 
@@ -130,6 +130,13 @@ autocmd FileType go nmap <leader>r  <Plug>(go-run)
 " goimports on save
 let g:go_fmt_command = "goimports"
 
+" YAML
+autocmd FileType yaml set sw=2
+
+" Ansible
+au BufRead,BufNewFile */ansible/*.yml set filetype=yaml.ansible
+au BufRead,BufNewFile */ansible-pull/*.yml set filetype=yaml.ansible
+let g:ansible_unindent_after_newline = 1
 
 " quickfix
 map <C-n> :cnext<CR>
@@ -157,6 +164,12 @@ nnoremap <leader>pd :YcmCompleter GoToDefinition<CR>
 nnoremap <leader>pc :YcmCompleter GoToDeclaration<CR>
 
 nmap <Esc>1    :NERDTreeToggle<CR>
+nmap <Esc>!    :NERDTreeFind<CR>
+nmap <leader>1    :NERDTreeFind<CR>
+nmap <Esc>2    :Gblame<CR>
+
+" cloudformation templates are json
+autocmd BufNewFile,BufRead *.template   set ft=json sw=2 ts=2 expandtab
 
 let g:fzf_colors =
 \ { 'fg':      ['fg', 'Normal'],
