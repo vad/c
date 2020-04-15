@@ -1,0 +1,11 @@
+{
+    "python.jediEnabled": false,
+    "python.formatting.provider": "black",
+    "languageserver": {
+        "terraform": {
+            "command": "terraform-lsp",
+            "filetypes": ["terraform"],
+            "initializationOptions": {}
+        }
+    }
+}

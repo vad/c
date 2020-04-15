@@ -7,7 +7,7 @@ set $mod Mod4
 
 # Font for window titles. Will also be used by the bar unless a different font
 # is used in the bar {} block below.
-font pango:MesloLGS NF Regular 10
+font pango:Ubuntu, MesloLGS NF Regular 11
 
 # Before i3 v4.8, we used to recommend this one as the default:
 # font -misc-fixed-medium-r-normal--13-120-75-75-C-70-iso10646-1
@@ -19,6 +19,31 @@ font pango:MesloLGS NF Regular 10
 # Use Mouse+$mod to drag floating windows to their wanted position
 floating_modifier $mod
 
+## APPEARANCE
+
+# theme colors
+set $bg-color 	         #ffb52a
+# set $bg-color 	         #212121
+set $inactive-bg-color   #414141
+set $text-color          #ffffff
+set $focused-text-color  #000000
+set $inactive-text-color #777777
+set $urgent-bg-color     #e64a19
+
+# set window colors
+# class                 border              background         text                 indicator
+client.focused          $bg-color           $bg-color          $focused-text-color  $bg-color
+client.unfocused        $inactive-bg-color  $inactive-bg-color $inactive-text-color $bg-color
+client.focused_inactive $inactive-bg-color  $inactive-bg-color $inactive-text-color $bg-color
+client.urgent           $urgent-bg-color    $urgent-bg-color   $text-color          $bg-color
+client.background       $bg-color
+
+default_border normal 1
+
+exec --no-startup-id sh ~/.fehbg
+
+
+## COMMANDS
 # start a terminal
 bindsym $mod+Return exec i3-sensible-terminal
 
@@ -145,9 +170,14 @@ bindsym $mod+r mode "resize"
 # finds out, if available)
 bar {
         # status_command i3status -c ~/.config/i3status/config
-        status_command i3status
+        # status_command i3status
+        status_command ~/.virtualenvs/py3status/bin/py3status
         tray_output primary
         separator_symbol " | "
+
+        colors {
+            focused_workspace  $bg-color $bg-color $focused-text-color
+        }
 }
 
 ## vad
@@ -158,26 +188,36 @@ ipc-socket ~/.config/i3/i3-ipc.sock
 bindsym XF86AudioRaiseVolume exec --no-startup-id "pactl set-sink-mute @DEFAULT_SINK@ 0 ; pactl set-sink-volume @DEFAULT_SINK@ +5%"
 bindsym XF86AudioLowerVolume exec --no-startup-id "pactl set-sink-mute @DEFAULT_SINK@ 0 ; pactl set-sink-volume @DEFAULT_SINK@ -5%"
 bindsym XF86AudioMute exec --no-startup-id pactl set-sink-mute @DEFAULT_SINK@ toggle # mute sound
+bindsym $mod+XF86AudioMute exec --no-startup-id pactl set-source-mute @DEFAULT_SOURCE@ toggle # mute mic
 bindsym XF86AudioMicMute exec --no-startup-id pactl set-source-mute @DEFAULT_SOURCE@ toggle # mute mic
 
 # Screen brightness
-bindsym XF86MonBrightnessUp exec --no-startup-id brightnessctl set +10%
-bindsym XF86MonBrightnessDown exec --no-startup-id brightnessctl set 10%-
+bindsym XF86MonBrightnessUp exec --no-startup-id "brightnessctl set +10% ; killall -USR1 py3status"
+bindsym XF86MonBrightnessDown exec --no-startup-id "brightnessctl set 10%- ; killall -USR1 py3status"
 
 # control spotify
 bindsym XF86Tools exec --no-startup-id dbus-send --print-reply --dest=org.mpris.MediaPlayer2.spotify /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player.PlayPause
 bindsym XF86AudioPlay exec --no-startup-id dbus-send --print-reply --dest=org.mpris.MediaPlayer2.spotify /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player.PlayPause
+bindsym $mod+Next exec --no-startup-id dbus-send --print-reply --dest=org.mpris.MediaPlayer2.spotify /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player.Next
+bindsym $mod+Prior exec --no-startup-id dbus-send --print-reply --dest=org.mpris.MediaPlayer2.spotify /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player.Previous
 
 bindsym --release Print exec --no-startup-id /usr/bin/gnome-screenshot -c -a
+bindsym --release Shift+Print exec --no-startup-id /usr/bin/gnome-screenshot -i
 
-bindsym Scroll_Lock exec --no-startup-id i3lock -c 000000
-bindsym $mod+End exec --no-startup-id i3lock -c 000000
+bindsym Scroll_Lock exec --no-startup-id .config/i3/scripts/power.sh
+bindsym $mod+End exec --no-startup-id .config/i3/scripts/power.sh
+bindsym Pause exec --no-startup-id .config/i3/scripts/power.sh
+bindsym $mod+o exec --no-startup-id .config/i3/scripts/display.sh
 
 # if only 2 outputs, it will toggle between the 2
 bindsym $mod+Shift+m move workspace to output right
 
-workspace 10 output DP-1
-
+workspace 1 output primary
+workspace 2 output primary
+workspace 3 output primary
+workspace 4 output primary
+workspace 9 output eDP-1
+workspace 10 output eDP-1
 
 # STARTUP APPLICATIONS
 # network manager
@@ -188,7 +228,13 @@ exec --no-startup-id nextcloud
 exec --no-startup-id /usr/bin/xfce4-clipman
 # lock the screen on suspend
 exec --no-startup-id xss-lock -- ~/.config/i3/scripts/lock.sh
+exec --no-startup-id xautolock -time 5 -locker ~/.config/i3/scripts/lock.sh
+exec --no-startup-id /usr/bin/system-config-printer-applet
+# exec --no-startup-id /usr/bin/polybar example
 
 workspace_auto_back_and_forth yes
 focus_on_window_activation focus
+
+# hides borders on workspaces with only one window visible
+hide_edge_borders smart
 

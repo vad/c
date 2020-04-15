@@ -27,6 +27,7 @@ Plug 'martinda/Jenkinsfile-vim-syntax'
 Plug 'scrooloose/nerdtree'
 
 Plug 'tpope/vim-surround'
+Plug 'tpope/vim-repeat'
 
 Plug 'google/vim-jsonnet'
 
@@ -46,8 +47,6 @@ Plug 'vim-scripts/restore_view.vim'
 Plug 'tpope/vim-commentary'
 
 Plug 'hashivim/vim-terraform'
-
-Plug 'psf/black'
 
 Plug 'cespare/vim-toml'
 
@@ -326,6 +325,7 @@ nmap <M-2>    :Gblame<CR>
 autocmd BufNewFile,BufRead *.template   set ft=json sw=2 ts=2 expandtab
 
 set expandtab
+set list
 
 let g:fzf_colors =
 \ { 'fg':      ['fg', 'Normal'],
@@ -356,3 +356,10 @@ au BufNewFile,BufRead *.target    set filetype=systemd
 au BufNewFile,BufRead *.timer     set filetype=systemd
 
 let g:fugitive_gitlab_domains = ['https://scanzia.spaziodati.eu']
+
+let g:python_host_prog='/usr/bin/python3'
+
+let g:strip_whitespace_on_save = 1
+let g:strip_only_modified_lines = 1
+let g:strip_whitespace_confirm = 0
+let g:strip_max_file_size = 10000
