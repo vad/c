@@ -6,6 +6,7 @@ Plug 'junegunn/fzf.vim'
 Plug 'mileszs/ack.vim'
 
 Plug 'tomasr/molokai'
+Plug 'morhetz/gruvbox'
 
 Plug 'airblade/vim-gitgutter'
 
@@ -64,16 +65,18 @@ set nocompatible
 set number
 set relativenumber
 
-let g:rehash256 = 1
-let g:molokai_original = 1
-colorscheme molokai
+set termguicolors
+" let g:rehash256 = 1
+" let g:molokai_original = 1
+" colorscheme molokai
+colorscheme gruvbox
 
-if &term =~ '256color'
-    " Disable Background Color Erase (BCE) so that color schemes
-    " work properly when Vim is used inside tmux and GNU screen.
-    " Apparently not just tmux...
-    set t_ut=
-endif
+" if &term =~ '256color'
+"     " Disable Background Color Erase (BCE) so that color schemes
+"     " work properly when Vim is used inside tmux and GNU screen.
+"     " Apparently not just tmux...
+"     set t_ut=
+" endif
 
 " git-gutter
 set updatetime=250
@@ -85,15 +88,16 @@ function! CocCurrentFunction()
     return get(b:, 'coc_current_function', '')
 endfunction
 let g:lightline = {
-      \ 'active': {
-      \   'left': [ [ 'mode', 'paste' ],
-      \             [ 'cocstatus', 'currentfunction', 'readonly', 'filename', 'modified' ] ]
-      \ },
-      \ 'component_function': {
-      \   'cocstatus': 'coc#status',
-      \   'currentfunction': 'CocCurrentFunction'
-      \ },
-      \ }
+    \ 'active': {
+    \   'left': [ [ 'mode', 'paste' ],
+    \             [ 'cocstatus', 'currentfunction', 'readonly', 'filename', 'modified' ] ]
+    \ },
+    \ 'colorscheme': 'gruvbox',
+    \ 'component_function': {
+    \   'cocstatus': 'coc#status',
+    \   'currentfunction': 'CocCurrentFunction'
+    \ },
+\ }
 
 nmap <Leader>; :Buffers<CR>
 nmap <Leader>t :Files<CR>
