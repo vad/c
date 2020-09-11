@@ -1,11 +1,30 @@
 {
-    "python.jediEnabled": false,
-    "python.formatting.provider": "black",
-    "languageserver": {
-        "terraform": {
-            "command": "terraform-lsp",
-            "filetypes": ["terraform"],
-            "initializationOptions": {}
-        }
+  "python.jediEnabled": false,
+  "python.formatting.provider": "black",
+  "pyright.disableLanguageServices": true,
+  "languageserver": {
+    "terraform": {
+      "command": "terraform-lsp",
+      "filetypes": [
+        "terraform"
+      ],
+      "initializationOptions": {}
+    },
+    "golang": {
+      "command": "gopls",
+      "rootPatterns": [
+        "go.mod",
+        ".vim/",
+        ".git/",
+        ".hg/"
+      ],
+      "filetypes": [
+        "go"
+      ]
     }
+  },
+  "snippets.ultisnips.directories": [
+    "UltiSnips",
+    "gosnippets/UltiSnips"
+  ]
 }

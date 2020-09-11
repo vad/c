@@ -5,7 +5,7 @@ Plug 'junegunn/fzf.vim'
 
 Plug 'mileszs/ack.vim'
 
-Plug 'tomasr/molokai'
+"Plug 'tomasr/molokai'
 Plug 'morhetz/gruvbox'
 
 Plug 'airblade/vim-gitgutter'
@@ -15,7 +15,8 @@ Plug 'shumphrey/fugitive-gitlab.vim'
 
 Plug 'itchyny/lightline.vim'
 
-Plug 'fatih/vim-go', { 'do': ':GoUpdateBinaries' }
+" { 'do': ':GoUpdateBinaries' }
+Plug 'fatih/vim-go'
 
 Plug 'pearofducks/ansible-vim'
 
@@ -34,16 +35,7 @@ Plug 'google/vim-jsonnet'
 
 Plug 'vim-scripts/restore_view.vim'
 
-"if has('nvim')
-"  Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
-"else
-"  Plug 'Shougo/deoplete.nvim'
-"  Plug 'roxma/nvim-yarp'
-"  Plug 'roxma/vim-hug-neovim-rpc'
-"endif
-"let g:deoplete#enable_at_startup = 1
-"
-"Plug 'deoplete-plugins/deoplete-go', { 'do': 'make'}
+Plug 'amadeus/vim-mjml'
 
 Plug 'tpope/vim-commentary'
 
@@ -53,6 +45,8 @@ Plug 'cespare/vim-toml'
 
 Plug 'robbles/logstash.vim'
 
+Plug 'uarun/vim-protobuf'
+
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
 
 " Initialize plugin system
@@ -61,6 +55,7 @@ call plug#end()
 " ------------------------------------------------------------------------
 
 set nocompatible
+" set t_Co=256
 
 set number
 set relativenumber
@@ -71,36 +66,12 @@ set termguicolors
 " colorscheme molokai
 colorscheme gruvbox
 
-" if &term =~ '256color'
-"     " Disable Background Color Erase (BCE) so that color schemes
-"     " work properly when Vim is used inside tmux and GNU screen.
-"     " Apparently not just tmux...
-"     set t_ut=
-" endif
-
-" git-gutter
-set updatetime=250
-
-" lightline
-set laststatus=2
-set noshowmode " don't show -- INSERT -- at the bottom, it's already in the statusline
-function! CocCurrentFunction()
-    return get(b:, 'coc_current_function', '')
-endfunction
-let g:lightline = {
-    \ 'active': {
-    \   'left': [ [ 'mode', 'paste' ],
-    \             [ 'cocstatus', 'currentfunction', 'readonly', 'filename', 'modified' ] ]
-    \ },
-    \ 'colorscheme': 'gruvbox',
-    \ 'component_function': {
-    \   'cocstatus': 'coc#status',
-    \   'currentfunction': 'CocCurrentFunction'
-    \ },
-\ }
+" ~/.viminfo needs to be writable and readable. Set oldfiles to 1000 last
+" recently opened files, :History uses it
+set viminfo='1000
 
 nmap <Leader>; :Buffers<CR>
-nmap <Leader>t :Files<CR>
+nmap <Leader>t :GFiles<CR>
 nmap <Leader>r :Tags<CR>
 
 nmap <M-k>    :Ack! "\b<cword>\b" <CR>
@@ -130,8 +101,8 @@ cnoremap <Esc>d <S-right><Delete>
 cnoremap <C-g>  <C-c>
 
 " Use the space key to toggle folds
-nnoremap <space> za
-vnoremap <space> zf
+"nnoremap <space> za
+"vnoremap <space> zf
 
 " folding
 set foldmethod=indent
@@ -140,15 +111,6 @@ set foldlevelstart=99
 
 " use Ctrl+C to copy to system clipboard in visual mode
 vmap <C-C> "+y
-
-"" GO ------------------------
-
-" go shortcuts
-autocmd FileType go nmap <leader>b  <Plug>(go-build)
-autocmd FileType go nmap <leader>r  <Plug>(go-run)
-
-" goimports on save
-let g:go_fmt_command = "goimports"
 
 " YAML
 autocmd FileType yaml set sw=2
@@ -174,20 +136,103 @@ set suffixes+=.pyc          " Ignore these files when tab-completing
 set ts=4
 set sw=4
 
-" YouCompleteMe
 
-"let g:ycm_autoclose_preview_window_after_completion = 1
+function! s:BlameToggle() abort
+  let found = 0
+  for winnr in range(1, winnr('$'))
+    if getbufvar(winbufnr(winnr), '&filetype') ==# 'fugitiveblame'
+      exe winnr . 'close'
+      let found = 1
+    endif
+  endfor
+  if !found
+    Git blame
+  endif
+endfunction
 
-"nnoremap <leader>y :YcmForceCompileAndDiagnostics<cr>
-"nnoremap <leader>g :YcmCompleter GoTo<CR>
-"nnoremap <leader>pd :YcmCompleter GoToDefinition<CR>
-"nnoremap <leader>pc :YcmCompleter GoToDeclaration<CR>
+nmap <M-1>    :NERDTreeToggle<CR>
+nmap <Esc>1    :NERDTreeToggle<CR>
+nmap <Esc>!    :NERDTreeFind<CR>
+nmap <leader>1    :NERDTreeFind<CR>
+nmap <silent> <M-2> :call <SID>BlameToggle()<CR>
+nmap <silent> <Esc>a :CocAction<CR>
+nmap <silent> <space><space> :CocList symbols<CR>
 
-" deoplete
-" <TAB>: completion.
-" inoremap <expr><TAB>  pumvisible() ? "\<C-n>" : "\<TAB>"
+" cloudformation templates are json
+autocmd BufNewFile,BufRead *.template   set ft=json sw=2 ts=2 expandtab
 
-" COC ------------------
+set expandtab
+set list
+
+set viewoptions=cursor,folds,slash,unix
+" let g:skipview_files = ['*\.vim']
+
+" systemd filetypes
+au BufNewFile,BufRead *.automount set filetype=systemd
+au BufNewFile,BufRead *.mount     set filetype=systemd
+au BufNewFile,BufRead *.path      set filetype=systemd
+au BufNewFile,BufRead *.service   set filetype=systemd
+au BufNewFile,BufRead *.socket    set filetype=systemd
+au BufNewFile,BufRead *.swap      set filetype=systemd
+au BufNewFile,BufRead *.target    set filetype=systemd
+au BufNewFile,BufRead *.timer     set filetype=systemd
+
+let g:python_host_prog='/usr/bin/python3'
+
+let g:strip_whitespace_on_save = 1
+let g:strip_only_modified_lines = 1
+let g:strip_whitespace_confirm = 0
+let g:strip_max_file_size = 10000
+
+"=================== PLUGINS ====================
+
+" =================== FUGITIVE ==================
+let g:fugitive_gitlab_domains = ['https://scanzia.spaziodati.eu']
+
+" ================== GIT-GUTTER =================
+set updatetime=250
+
+" ================== LIGHTLINE ==================
+set laststatus=2
+set noshowmode " don't show -- INSERT -- at the bottom, it's already in the statusline
+function! CocCurrentFunction()
+    return get(b:, 'coc_current_function', '')
+endfunction
+let g:lightline = {
+    \ 'active': {
+    \   'left': [ [ 'mode', 'paste' ],
+    \             [ 'cocstatus', 'currentfunction', 'readonly', 'filename', 'modified' ] ]
+    \ },
+    \ 'colorscheme': 'gruvbox',
+    \ 'component_function': {
+    \   'cocstatus': 'coc#status',
+    \   'currentfunction': 'CocCurrentFunction'
+    \ },
+\ }
+
+" ===================== GO ====================
+
+" go shortcuts
+augroup go
+    autocmd!
+
+    autocmd FileType go nmap <leader>b  <Plug>(go-build)
+    autocmd FileType go nmap <leader>r  <Plug>(go-run)
+
+    autocmd FileType go nmap <silent> <Leader>l <Plug>(go-metalinter)
+    autocmd FileType go nmap <silent> <Leader>c <Plug>(go-coverage-toggle)
+    autocmd Filetype go command! -bang A call go#alternate#Switch(<bang>0, 'edit')
+    autocmd Filetype go command! -bang AV call go#alternate#Switch(<bang>0, 'vsplit')
+    autocmd Filetype go command! -bang AS call go#alternate#Switch(<bang>0, 'split')
+augroup END
+
+" goimports on save
+let g:go_fmt_command = "goimports"
+
+" let coc handle gd
+let g:go_def_mapping_enabled = 0
+
+" ===================== COC ===================
 " if hidden is not set, TextEdit might fail.
 set hidden
 
@@ -207,18 +252,19 @@ set shortmess+=c
 " always show signcolumns
 set signcolumn=yes
 
-" Use tab for trigger completion with characters ahead and navigate.
-" Use command ':verbose imap <tab>' to make sure tab is not mapped by other plugin.
+" Make <tab> used for trigger completion, completion confirm, snippet expand and jump
 inoremap <silent><expr> <TAB>
-      \ pumvisible() ? "\<C-n>" :
+      \ pumvisible() ? coc#_select_confirm() :
+      \ coc#expandableOrJumpable() ? "\<C-r>=coc#rpc#request('doKeymap', ['snippets-expand-jump',''])\<CR>" :
       \ <SID>check_back_space() ? "\<TAB>" :
       \ coc#refresh()
-inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<C-h>"
 
 function! s:check_back_space() abort
   let col = col('.') - 1
   return !col || getline('.')[col - 1]  =~# '\s'
 endfunction
+
+let g:coc_snippet_next = '<tab>'
 
 " Use <c-space> to trigger completion.
 inoremap <silent><expr> <c-space> coc#refresh()
@@ -308,8 +354,8 @@ nnoremap <silent> <space>e  :<C-u>CocList extensions<cr>
 nnoremap <silent> <space>c  :<C-u>CocList commands<cr>
 " Find symbol of current document
 nnoremap <silent> <space>o  :<C-u>CocList outline<cr>
-" Search workspace symbols
-nnoremap <silent> <space>s  :<C-u>CocList -I symbols<cr>
+" Search snippets
+nnoremap <silent> <space>s  :<C-u>CocList snippets<cr>
 " Do default action for next item.
 nnoremap <silent> <space>j  :<C-u>CocNext<CR>
 " Do default action for previous item.
@@ -318,19 +364,7 @@ nnoremap <silent> <space>k  :<C-u>CocPrev<CR>
 nnoremap <silent> <space>p  :<C-u>CocListResume<CR>
 " END COC --------------
 
-
-nmap <M-1>    :NERDTreeToggle<CR>
-nmap <Esc>1    :NERDTreeToggle<CR>
-nmap <Esc>!    :NERDTreeFind<CR>
-nmap <leader>1    :NERDTreeFind<CR>
-nmap <M-2>    :Gblame<CR>
-
-" cloudformation templates are json
-autocmd BufNewFile,BufRead *.template   set ft=json sw=2 ts=2 expandtab
-
-set expandtab
-set list
-
+" ==================== FZF ====================
 let g:fzf_colors =
 \ { 'fg':      ['fg', 'Normal'],
   \ 'bg':      ['bg', 'Normal'],
@@ -346,24 +380,6 @@ let g:fzf_colors =
   \ 'spinner': ['fg', 'Label'],
   \ 'header':  ['fg', 'Comment'] }
 
-set viewoptions=cursor,folds,slash,unix
-" let g:skipview_files = ['*\.vim']
+let g:fzf_layout = { 'down': '~20%' }
 
-" systemd filetypes
-au BufNewFile,BufRead *.automount set filetype=systemd
-au BufNewFile,BufRead *.mount     set filetype=systemd
-au BufNewFile,BufRead *.path      set filetype=systemd
-au BufNewFile,BufRead *.service   set filetype=systemd
-au BufNewFile,BufRead *.socket    set filetype=systemd
-au BufNewFile,BufRead *.swap      set filetype=systemd
-au BufNewFile,BufRead *.target    set filetype=systemd
-au BufNewFile,BufRead *.timer     set filetype=systemd
-
-let g:fugitive_gitlab_domains = ['https://scanzia.spaziodati.eu']
-
-let g:python_host_prog='/usr/bin/python3'
-
-let g:strip_whitespace_on_save = 1
-let g:strip_only_modified_lines = 1
-let g:strip_whitespace_confirm = 0
-let g:strip_max_file_size = 10000
+nnoremap <leader>or  :History<CR>
