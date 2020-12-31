@@ -185,8 +185,8 @@ bar {
 ipc-socket ~/.config/i3/i3-ipc.sock
 
 ## Pulse Audio controls
-bindsym XF86AudioRaiseVolume exec --no-startup-id "pactl set-sink-mute @DEFAULT_SINK@ 0 ; pactl set-sink-volume @DEFAULT_SINK@ +5%; /home/vad/.virtualenvs/py3status/bin/py3-cmd refresh 'volume master'"
-bindsym XF86AudioLowerVolume exec --no-startup-id "pactl set-sink-mute @DEFAULT_SINK@ 0 ; pactl set-sink-volume @DEFAULT_SINK@ -5%; /home/vad/.virtualenvs/py3status/bin/py3-cmd refresh 'volume master'"
+bindsym XF86AudioRaiseVolume exec --no-startup-id "pactl set-sink-mute @DEFAULT_SINK@ 0 ; pactl set-sink-volume @DEFAULT_SINK@ +5%"
+bindsym XF86AudioLowerVolume exec --no-startup-id "pactl set-sink-mute @DEFAULT_SINK@ 0 ; pactl set-sink-volume @DEFAULT_SINK@ -5%"
 bindsym XF86AudioMute exec --no-startup-id pactl set-sink-mute @DEFAULT_SINK@ toggle # mute sound
 bindsym $mod+XF86AudioMute exec --no-startup-id pactl set-source-mute @DEFAULT_SOURCE@ toggle # mute mic
 bindsym XF86AudioMicMute exec --no-startup-id pactl set-source-mute @DEFAULT_SOURCE@ toggle # mute mic
@@ -203,8 +203,8 @@ bindsym XF86AudioNext exec --no-startup-id dbus-send --print-reply --dest=org.mp
 bindsym $mod+Prior exec --no-startup-id dbus-send --print-reply --dest=org.mpris.MediaPlayer2.spotify /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player.Previous
 bindsym XF86AudioPrev exec --no-startup-id dbus-send --print-reply --dest=org.mpris.MediaPlayer2.spotify /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player.Previous
 
-bindsym --release Print exec --no-startup-id /usr/bin/gnome-screenshot -c -a
-bindsym --release Shift+Print exec --no-startup-id /usr/bin/gnome-screenshot -i
+bindsym --release Print exec --no-startup-id /usr/bin/xfce4-screenshooter --clipboard --region
+bindsym --release Shift+Print exec --no-startup-id /usr/bin/xfce4-screenshooter
 
 bindsym Scroll_Lock exec --no-startup-id .config/i3/scripts/power.sh
 bindsym $mod+End exec --no-startup-id .config/i3/scripts/power.sh
@@ -220,6 +220,9 @@ workspace 3 output primary
 workspace 4 output primary
 workspace 9 output eDP-1
 workspace 10 output eDP-1
+
+# STARTUP SETUP
+exec --no-startup-id synclient HorizEdgeScroll=1 VertEdgeScroll=1 VertScrollDelta=-111
 
 # STARTUP APPLICATIONS
 # network manager

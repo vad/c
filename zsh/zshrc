@@ -58,19 +58,20 @@ ZSH_THEME="powerlevel10k/powerlevel10k"
 # Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
-plugins=(autojump docker httpie git pimento taskwarrior teleport terraform virtualenvwrapper)
+plugins=(autojump docker httpie git gulp pimento taskwarrior terraform virtualenvwrapper)
 
 # User configuration
 
-export PATH="$HOME/.local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:$HOME/.platformio/penv/bin:/snap/bin:${HOME}/.krew/bin"
+export PATH="$HOME/.local/bin:/home/linuxbrew/.linuxbrew/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:$HOME/.platformio/penv/bin:/snap/bin:${HOME}/.krew/bin"
 # export MANPATH="/usr/local/man:$MANPATH"
 export WORKON_HOME=$HOME/.virtualenvs
-export VIRTUALENVWRAPPER_PYTHON=/usr/bin/python
+# export VIRTUALENVWRAPPER_PYTHON=/usr/bin/python
 
 source $ZSH/oh-my-zsh.sh
 
 # You may need to manually set your language environment
 # export LANG=en_US.UTF-8
+export LANGUAGE=en LC_ALL=en_US.UTF-8
 
 # Preferred editor for local and remote sessions
 # if [[ -n $SSH_CONNECTION ]]; then
@@ -106,9 +107,10 @@ _has() {
 }
 
 # fzf via local installation
-if [ -e ~/.vim/pack/plugins/start/fzf ]; then
-  source ~/.vim/pack/plugins/start/fzf/shell/key-bindings.zsh
-  source ~/.vim/pack/plugins/start/fzf/shell/completion.zsh
+FZF_HOME=/home/linuxbrew/.linuxbrew/opt/fzf
+if [ -e $FZF_HOME ]; then
+  source $FZF_HOME/shell/key-bindings.zsh
+  source $FZF_HOME/shell/completion.zsh
 fi
 
 # fzf + ag configuration
@@ -133,5 +135,10 @@ fi
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
 
 # anyenv
-export PATH="$HOME/data/Software/anyenv/bin:$PATH"
-eval "$(anyenv init -)"
+# export PATH="$HOME/data/Software/anyenv/bin:$PATH"
+# eval "$(anyenv init -)"
+#
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+
