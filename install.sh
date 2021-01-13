@@ -18,3 +18,7 @@ ln -s -i $PWD/i3/scripts ~/.config/i3/
 # dunst
 mkdir -p ~/.config/dunst
 ln -s -i $PWD/dunstrc ~/.config/dunst/dunstrc
+
+# alacritty
+mkdir -p ~/.config/alacritty
+ln -s -i $PWD/alacritty.yml ~/.config/alacritty/alacritty.yml
