@@ -385,3 +385,5 @@ let g:fzf_colors =
 let g:fzf_layout = { 'down': '~20%' }
 
 nnoremap <leader>or  :History<CR>
+
+autocmd BufWritePost ~/.Xresources silent !xrdb <afile> > /dev/null

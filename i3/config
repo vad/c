@@ -218,6 +218,10 @@ workspace 1 output primary
 workspace 2 output primary
 workspace 3 output primary
 workspace 4 output primary
+workspace 5 output primary
+workspace 6 output primary
+workspace 7 output primary
+workspace 8 output primary
 workspace 9 output eDP-1
 workspace 10 output eDP-1
 
@@ -227,7 +231,7 @@ exec --no-startup-id synclient HorizEdgeScroll=1 VertEdgeScroll=1 VertScrollDelt
 # STARTUP APPLICATIONS
 # network manager
 exec --no-startup-id nm-applet
-exec --no-startup-id xrandr --output eDP-1 --mode 1600x900
+exec --no-startup-id /home/vad/.screenlayout/mono.sh
 exec --no-startup-id nextcloud
 # clipboard manager: otherwise no pictures and copy-paste only if the origin application is still active
 exec --no-startup-id /usr/bin/xfce4-clipman
@@ -236,6 +240,7 @@ exec --no-startup-id xss-lock -- ~/.config/i3/scripts/lock.sh
 exec --no-startup-id xautolock -time 5 -locker ~/.config/i3/scripts/lock.sh
 exec --no-startup-id /usr/bin/system-config-printer-applet
 exec --no-startup-id /usr/bin/blueman-applet
+exec --no-startup-id /usr/bin/dunst
 # exec --no-startup-id /usr/bin/polybar example
 
 workspace_auto_back_and_forth yes
