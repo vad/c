@@ -245,6 +245,7 @@ exec --no-startup-id /home/vad/.screenlayout/mono.sh
 exec --no-startup-id nextcloud
 # clipboard manager: otherwise no pictures and copy-paste only if the origin application is still active
 exec --no-startup-id /usr/bin/xfce4-clipman
+bindsym $mod+Shift+v exec --no-startup-id /usr/bin/xfce4-popup-clipman
 # lock the screen on suspend
 exec --no-startup-id xss-lock -- ~/.config/i3/scripts/lock.sh
 exec --no-startup-id xautolock -time 5 -locker ~/.config/i3/scripts/lock.sh

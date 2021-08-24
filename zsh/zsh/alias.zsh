@@ -23,5 +23,6 @@ alias ave='aws-vault exec'
 
 alias tf=terraform
 alias k=kubectl
+alias v=vim
 
-alias bfg="java -jar ~/data/Software/bfg-1.13.0.jar"
+alias hg="kitty +kitten hyperlinked_grep"

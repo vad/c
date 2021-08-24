@@ -51,6 +51,15 @@ Plug 'neoclide/coc.nvim', {'branch': 'release'}
 
 Plug 'easymotion/vim-easymotion'
 
+Plug 'vim-test/vim-test'
+
+Plug 'ziglang/zig.vim'
+
+Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
+Plug 'nvim-treesitter/playground'
+
+Plug 'vim-scripts/ReplaceWithRegister'
+
 " Initialize plugin system
 call plug#end()
 
@@ -387,3 +396,28 @@ let g:fzf_layout = { 'down': '~20%' }
 nnoremap <leader>or  :History<CR>
 
 autocmd BufWritePost ~/.Xresources silent !xrdb <afile> > /dev/null
+
+" vim-test
+let test#python#runner = 'pytest'
+" these "Ctrl mappings" work well when Caps Lock is mapped to Ctrl
+nmap <silent> t<C-n> :TestNearest<CR>
+nmap <silent> t<C-f> :TestFile<CR>
+nmap <silent> t<C-s> :TestSuite<CR>
+nmap <silent> t<C-l> :TestLast<CR>
+nmap <silent> t<C-g> :TestVisit<CR>
+
+" zig
+"au BufRead,BufNewFile *.zig    setfiletype zig
+
+" treesitter
+lua <<EOF
+require'nvim-treesitter.configs'.setup {
+  ensure_installed = "maintained", -- one of "all", "maintained" (parsers with maintainers), or a list of languages
+  highlight = {
+    enable = true
+  },
+  indent = {
+    enable = true,
+  },
+}
+EOF

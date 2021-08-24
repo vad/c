@@ -1,11 +1,13 @@
 {
-    "python.jediEnabled": false,
+    "list.source.symbols.excludes": [],
+    "list.height": 15,
     "python.formatting.provider": "black",
-    "pyright.disableLanguageServices": true,
     "languageserver": {
         "terraform": {
             "command": "terraform-ls",
-            "args": ["serve"],
+            "args": [
+                "serve"
+            ],
             "filetypes": [
                 "terraform",
                 "tf"
@@ -23,6 +25,12 @@
             ],
             "filetypes": [
                 "go"
+            ]
+        },
+        "zls": {
+            "command": "/home/vad/Software/zls/zls",
+            "filetypes": [
+                "zig"
             ]
         }
     },
