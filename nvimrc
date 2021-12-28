@@ -1,11 +1,11 @@
-call plug#begin('~/.local/share/nvim/plugged')
+" vim-plug
+call plug#begin('~/.local/share/nvim3/plugged')
 
 Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
 Plug 'junegunn/fzf.vim'
 
 Plug 'mileszs/ack.vim'
 
-"Plug 'tomasr/molokai'
 Plug 'morhetz/gruvbox'
 
 Plug 'airblade/vim-gitgutter'
@@ -23,8 +23,6 @@ Plug 'pearofducks/ansible-vim'
 Plug 'ntpeters/vim-better-whitespace'
 
 Plug 'martinda/Jenkinsfile-vim-syntax'
-
-"Plug 'nvie/vim-flake8'
 
 Plug 'scrooloose/nerdtree'
 
@@ -47,18 +45,38 @@ Plug 'robbles/logstash.vim'
 
 Plug 'uarun/vim-protobuf'
 
-Plug 'neoclide/coc.nvim', {'branch': 'release'}
+" lsp
+Plug 'neovim/nvim-lspconfig'
+Plug 'williamboman/nvim-lsp-installer'
+
+" Install nvim-cmp
+Plug 'hrsh7th/nvim-cmp'
+" Install snippet engine (This example installs [hrsh7th/vim-vsnip](https://github.com/hrsh7th/vim-vsnip))
+Plug 'hrsh7th/cmp-vsnip'
+Plug 'hrsh7th/vim-vsnip'
+Plug 'hrsh7th/vim-vsnip-integ'
+
+" Install the buffer completion source
+Plug 'hrsh7th/cmp-buffer'
+Plug 'hrsh7th/cmp-nvim-lsp'
+Plug 'hrsh7th/cmp-path'
+Plug 'hrsh7th/cmp-nvim-lua'
+Plug 'ray-x/cmp-treesitter'
+Plug 'f3fora/cmp-spell'
+
+Plug 'onsails/lspkind-nvim'
 
 Plug 'easymotion/vim-easymotion'
 
-Plug 'vim-test/vim-test'
+" Plug 'vim-test/vim-test'
 
 Plug 'ziglang/zig.vim'
 
 Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
 Plug 'nvim-treesitter/playground'
+Plug 'nvim-treesitter/nvim-treesitter-textobjects'
 
-Plug 'vim-scripts/ReplaceWithRegister'
+Plug 'mhartington/formatter.nvim'
 
 " Initialize plugin system
 call plug#end()
@@ -129,7 +147,7 @@ autocmd FileType yaml set sw=2
 " Ansible
 au BufRead,BufNewFile */ansible/*.yml set filetype=yaml.ansible
 au BufRead,BufNewFile */ansible-pull/*.yml set filetype=yaml.ansible
-let g:ansible_unindent_after_newline = 1
+" let g:ansible_unindent_after_newline = 1
 
 " quickfix
 map <C-n> :cnext<CR>
@@ -166,8 +184,6 @@ nmap <Esc>1    :NERDTreeToggle<CR>
 nmap <Esc>!    :NERDTreeFind<CR>
 nmap <leader>1    :NERDTreeFind<CR>
 nmap <silent> <M-2> :call <SID>BlameToggle()<CR>
-nmap <silent> <Esc>a :CocAction<CR>
-nmap <silent> <space><space> :CocList symbols<CR>
 
 " cloudformation templates are json
 autocmd BufNewFile,BufRead *.template   set ft=json sw=2 ts=2 expandtab
@@ -206,20 +222,6 @@ set updatetime=250
 " ================== LIGHTLINE ==================
 set laststatus=2
 set noshowmode " don't show -- INSERT -- at the bottom, it's already in the statusline
-function! CocCurrentFunction()
-    return get(b:, 'coc_current_function', '')
-endfunction
-let g:lightline = {
-    \ 'active': {
-    \   'left': [ [ 'mode', 'paste' ],
-    \             [ 'cocstatus', 'currentfunction', 'readonly', 'filename', 'modified' ] ]
-    \ },
-    \ 'colorscheme': 'gruvbox',
-    \ 'component_function': {
-    \   'cocstatus': 'coc#status',
-    \   'currentfunction': 'CocCurrentFunction'
-    \ },
-\ }
 
 " ===================== GO ====================
 
@@ -240,140 +242,8 @@ augroup END
 " goimports on save
 let g:go_fmt_command = "goimports"
 
-" let coc handle gd
+" let LSP handle gd
 let g:go_def_mapping_enabled = 0
-
-" ===================== COC ===================
-" if hidden is not set, TextEdit might fail.
-set hidden
-
-" Some servers have issues with backup files, see #649
-set nobackup
-set nowritebackup
-
-" Better display for messages
-set cmdheight=2
-
-" You will have bad experience for diagnostic messages when it's default 4000.
-set updatetime=300
-
-" don't give |ins-completion-menu| messages.
-set shortmess+=c
-
-" always show signcolumns
-set signcolumn=yes
-
-" Make <tab> used for trigger completion, completion confirm, snippet expand and jump
-inoremap <silent><expr> <TAB>
-      \ pumvisible() ? coc#_select_confirm() :
-      \ coc#expandableOrJumpable() ? "\<C-r>=coc#rpc#request('doKeymap', ['snippets-expand-jump',''])\<CR>" :
-      \ <SID>check_back_space() ? "\<TAB>" :
-      \ coc#refresh()
-
-function! s:check_back_space() abort
-  let col = col('.') - 1
-  return !col || getline('.')[col - 1]  =~# '\s'
-endfunction
-
-let g:coc_snippet_next = '<tab>'
-
-" Use <c-space> to trigger completion.
-inoremap <silent><expr> <c-space> coc#refresh()
-
-" Use <cr> to confirm completion, `<C-g>u` means break undo chain at current position.
-" Coc only does snippet and additional edit on confirm.
-inoremap <expr> <cr> pumvisible() ? "\<C-y>" : "\<C-g>u\<CR>"
-" Or use `complete_info` if your vim support it, like:
-" inoremap <expr> <cr> complete_info()["selected"] != "-1" ? "\<C-y>" : "\<C-g>u\<CR>"
-
-" Use `[g` and `]g` to navigate diagnostics
-nmap <silent> [g <Plug>(coc-diagnostic-prev)
-nmap <silent> ]g <Plug>(coc-diagnostic-next)
-
-" Remap keys for gotos
-nmap <silent> gd <Plug>(coc-definition)
-nmap <silent> gy <Plug>(coc-type-definition)
-nmap <silent> gi <Plug>(coc-implementation)
-nmap <silent> gr <Plug>(coc-references)
-
-" Use K to show documentation in preview window
-nnoremap <silent> K :call <SID>show_documentation()<CR>
-
-function! s:show_documentation()
-  if (index(['vim','help'], &filetype) >= 0)
-    execute 'h '.expand('<cword>')
-  else
-    call CocAction('doHover')
-  endif
-endfunction
-
-" Highlight symbol under cursor on CursorHold
-autocmd CursorHold * silent call CocActionAsync('highlight')
-
-" Remap for rename current word
-nmap <leader>rn <Plug>(coc-rename)
-
-" Remap for format selected region
-xmap <leader>f  <Plug>(coc-format-selected)
-nmap <leader>f  <Plug>(coc-format-selected)
-
-augroup mygroup
-  autocmd!
-  " Setup formatexpr specified filetype(s).
-  autocmd FileType typescript,json setl formatexpr=CocAction('formatSelected')
-  " Update signature help on jump placeholder
-  autocmd User CocJumpPlaceholder call CocActionAsync('showSignatureHelp')
-augroup end
-
-" Remap for do codeAction of selected region, ex: `<leader>aap` for current paragraph
-xmap <leader>a  <Plug>(coc-codeaction-selected)
-nmap <leader>a  <Plug>(coc-codeaction-selected)
-
-" Remap for do codeAction of current line
-nmap <leader>ac  <Plug>(coc-codeaction)
-" Fix autofix problem of current line
-nmap <leader>qf  <Plug>(coc-fix-current)
-
-" Create mappings for function text object, requires document symbols feature of languageserver.
-xmap if <Plug>(coc-funcobj-i)
-xmap af <Plug>(coc-funcobj-a)
-omap if <Plug>(coc-funcobj-i)
-omap af <Plug>(coc-funcobj-a)
-
-" Use <C-d> for select selections ranges, needs server support, like: coc-tsserver, coc-python
-nmap <silent> <C-d> <Plug>(coc-range-select)
-xmap <silent> <C-d> <Plug>(coc-range-select)
-
-" Use `:Format` to format current buffer
-command! -nargs=0 Format :call CocAction('format')
-
-" Use `:Fold` to fold current buffer
-command! -nargs=? Fold :call     CocAction('fold', <f-args>)
-
-" use `:OR` for organize import of current buffer
-command! -nargs=0 OR   :call     CocAction('runCommand', 'editor.action.organizeImport')
-
-" Add status line support, for integration with other plugin, checkout `:h coc-status`
-set statusline^=%{coc#status()}%{get(b:,'coc_current_function','')}
-
-" Using CocList
-" Show all diagnostics
-nnoremap <silent> <space>a  :<C-u>CocList diagnostics<cr>
-" Manage extensions
-nnoremap <silent> <space>e  :<C-u>CocList extensions<cr>
-" Show commands
-nnoremap <silent> <space>c  :<C-u>CocList commands<cr>
-" Find symbol of current document
-nnoremap <silent> <space>o  :<C-u>CocList outline<cr>
-" Search snippets
-nnoremap <silent> <space>s  :<C-u>CocList snippets<cr>
-" Do default action for next item.
-nnoremap <silent> <space>j  :<C-u>CocNext<CR>
-" Do default action for previous item.
-nnoremap <silent> <space>k  :<C-u>CocPrev<CR>
-" Resume latest coc list
-nnoremap <silent> <space>p  :<C-u>CocListResume<CR>
-" END COC --------------
 
 " ==================== FZF ====================
 let g:fzf_colors =
@@ -413,11 +283,217 @@ nmap <silent> t<C-g> :TestVisit<CR>
 lua <<EOF
 require'nvim-treesitter.configs'.setup {
   ensure_installed = "maintained", -- one of "all", "maintained" (parsers with maintainers), or a list of languages
+  ignore_install = { "zig" },
   highlight = {
     enable = true
   },
   indent = {
     enable = true,
   },
+  textobjects = {
+    select = {
+      enable = true,
+      lookahead = true, -- automatically jump forward to matching textobj
+      keymaps = {
+        ["af"] = "@function.outer",
+        ["if"] = "@function.inner",
+        ["ac"] = "@class.outer",
+        ["ic"] = "@class.inner",
+        ["aP"] = "@parameter.outer",
+        ["as"] = "@statement.outer"
+      }
+    }
+  },
 }
+EOF
+
+" LSP
+lua <<EOF
+require'lspconfig'.pyright.setup{}
+
+-- cmp
+local cmp = require'cmp'
+
+local t = function(str)
+    return vim.api.nvim_replace_termcodes(str, true, true, true)
+end
+
+local check_back_space = function()
+    local col = vim.fn.col(".") - 1
+    return col == 0 or vim.fn.getline("."):sub(col, col):match("%s") ~= nil
+end
+
+cmp.setup {
+    snippet = {
+        expand = function(args)
+            vim.fn["vsnip#anonymous"](args.body)
+        end,
+    },
+    formatting = {
+        format = function(entry, vim_item)
+            -- fancy icons and a name of kind
+            vim_item.kind = require("lspkind").presets.default[vim_item.kind] ..
+            " " .. vim_item.kind
+            -- set a name for each source
+            vim_item.menu = ({
+                buffer = "[Buffer]",
+                nvim_lsp = "[LSP]",
+                ultisnips = "[UltiSnips]",
+                nvim_lua = "[Lua]",
+                cmp_tabnine = "[TabNine]",
+                look = "[Look]",
+                path = "[Path]",
+                spell = "[Spell]",
+                calc = "[Calc]",
+                emoji = "[Emoji]"
+            })[entry.source.name]
+            return vim_item
+        end
+    },
+    mapping = {
+        ['<C-p>'] = cmp.mapping.select_prev_item(),
+        ['<C-n>'] = cmp.mapping.select_next_item(),
+        ['<C-d>'] = cmp.mapping.scroll_docs(-4),
+        ['<C-f>'] = cmp.mapping.scroll_docs(4),
+        ['<C-Space>'] = cmp.mapping.complete(),
+        ['<C-e>'] = cmp.mapping.close(),
+        ['<Tab>'] = cmp.mapping.confirm({select = true}),
+        ['<CR>'] = cmp.mapping.confirm({select = true}),
+--      ["<Tab>"] = cmp.mapping(function(fallback)
+--          if vim.fn.pumvisible() == 1 then
+--              vim.fn.feedkeys(t("<C-n>"), "n")
+--          elseif check_back_space() then
+--              vim.fn.feedkeys(t("<tab>"), "n")
+--          else
+--              fallback()
+--          end
+--      end, {"i", "s"}),
+        ["<S-Tab>"] = cmp.mapping(function(fallback)
+            if vim.fn.pumvisible() == 1 then
+                vim.fn.feedkeys(t("<C-p>"), "n")
+            else
+                fallback()
+            end
+        end, {"i", "s"})
+    },
+    sources = {
+        {name = 'nvim_lsp'},
+        {name = 'vsnip' },
+        {name = "path"},
+        {name = "treesitter"},
+        {name = "nvim_lua"},
+        {name = "spell"},
+        -- buffer can be slow, ocio!
+        {name = 'buffer', keyword_length = 5},
+    },
+    completion = {completeopt = 'menu,menuone,noinsert'},
+    experimental = {
+        native_menu = false,
+        ghost_text = true,
+    }
+}
+
+local capabilities = vim.lsp.protocol.make_client_capabilities()
+capabilities = require('cmp_nvim_lsp').update_capabilities(capabilities)
+
+local nvim_lsp = require('lspconfig')
+
+-- Use an on_attach function to only map the following keys
+-- after the language server attaches to the current buffer
+local on_attach = function(client, bufnr)
+    local function buf_set_keymap(...) vim.api.nvim_buf_set_keymap(bufnr, ...) end
+    local function buf_set_option(...) vim.api.nvim_buf_set_option(bufnr, ...) end
+
+    --Enable completion triggered by <c-x><c-o>
+    buf_set_option('omnifunc', 'v:lua.vim.lsp.omnifunc')
+
+    -- Mappings.
+    local opts = { noremap=true, silent=true }
+
+    -- See `:help vim.lsp.*` for documentation on any of the below functions
+    buf_set_keymap('n', 'gD', '<Cmd>lua vim.lsp.buf.declaration()<CR>', opts)
+    buf_set_keymap('n', 'gd', '<Cmd>lua vim.lsp.buf.definition()<CR>', opts)
+    buf_set_keymap('n', 'gr', '<Cmd>lua vim.lsp.buf.references()<CR>', opts)
+    buf_set_keymap('n', 'K', '<Cmd>lua vim.lsp.buf.hover()<CR>', opts)
+    buf_set_keymap('n', 'gi', '<cmd>lua vim.lsp.buf.implementation()<CR>', opts)
+    buf_set_keymap('n', '<C-k>', '<cmd>lua vim.lsp.buf.signature_help()<CR>', opts)
+    buf_set_keymap('n', '<space>wa', '<cmd>lua vim.lsp.buf.add_workspace_folder()<CR>', opts)
+    buf_set_keymap('n', '<space>wr', '<cmd>lua vim.lsp.buf.remove_workspace_folder()<CR>', opts)
+    buf_set_keymap('n', '<space>wl', '<cmd>lua print(vim.inspect(vim.lsp.buf.list_workspace_folders()))<CR>', opts)
+    buf_set_keymap('n', '<space>D', '<cmd>lua vim.lsp.buf.type_definition()<CR>', opts)
+    buf_set_keymap('n', '<space>rn', '<cmd>lua vim.lsp.buf.rename()<CR>', opts)
+    buf_set_keymap('n', '<space>ca', '<cmd>lua vim.lsp.buf.code_action()<CR>', opts)
+    buf_set_keymap('n', 'gr', '<cmd>lua vim.lsp.buf.references()<CR>', opts)
+    buf_set_keymap('n', '<space>e', '<cmd>lua vim.lsp.diagnostic.show_line_diagnostics()<CR>', opts)
+    buf_set_keymap('n', '[d', '<cmd>lua vim.lsp.diagnostic.goto_prev()<CR>', opts)
+    buf_set_keymap('n', ']d', '<cmd>lua vim.lsp.diagnostic.goto_next()<CR>', opts)
+    buf_set_keymap('n', '<space>q', '<cmd>lua vim.lsp.diagnostic.set_loclist()<CR>', opts)
+    buf_set_keymap("n", "<space>f", "<cmd>lua vim.lsp.buf.formatting()<CR>", opts)
+    buf_set_keymap("n", "<space>ll", "<cmd>lua vim.lsp.log.get_filename()<CR>", opts)
+
+end
+
+local lsp_installer = require("nvim-lsp-installer")
+
+-- Register a handler that will be called for all installed servers.
+-- Alternatively, you may also register handlers on specific server instances instead (see example below).
+lsp_installer.on_server_ready(function(server)
+    local opts = {
+        on_attach = on_attach,
+        capabilities = capabilities,
+    }
+
+    if server.name == "tsserver" then
+        opts.root_dir = nvim_lsp.util.root_pattern("package.json")
+    end
+
+    if server.name == "denols" then
+        opts.root_dir = nvim_lsp.util.root_pattern("deno.json")
+    end
+
+    -- This setup() function is exactly the same as lspconfig's setup function.
+    -- Refer to https://github.com/neovim/nvim-lspconfig/blob/master/doc/server_configurations.md
+    server:setup(opts)
+end)
+EOF
+
+
+" formatter
+lua <<EOF
+local vim = vim
+local formatter = require("formatter")
+
+formatter.setup({
+    filetype = {
+        typescriptreact = {
+            -- prettier
+            function()
+                return {
+                    exe = "prettier",
+                    args = {"--stdin-filepath", vim.fn.fnameescape(vim.api.nvim_buf_get_name(0)), '--single-quote'},
+                    stdin = true
+                }
+            end
+        },
+        python = {
+            -- Configuration for psf/black
+            function()
+                return {
+                    exe = "black", -- this should be available on your $PATH
+                    args = { '-' },
+                    stdin = true,
+                }
+            end
+        },
+        typescript = {
+            function()
+                return {
+                    exe = "deno",
+                    args = { "fmt", "-" },
+                    stdin = true,
+                }
+            end
+        }
+    }
+})
 EOF

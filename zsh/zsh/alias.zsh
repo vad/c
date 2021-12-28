@@ -24,5 +24,6 @@ alias ave='aws-vault exec'
 alias tf=terraform
 alias k=kubectl
 alias v=vim
+alias vimdiff="vim -d"
 
 alias hg="kitty +kitten hyperlinked_grep"

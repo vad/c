@@ -2,7 +2,6 @@
 
 # vim
 ln -s -i $PWD/nvimrc /home/vad/.config/nvim/init.vim
-ln -s -i $PWD/coc-settings.json ~/.config/nvim/coc-settings.json
 
 # zsh
 ln -s -i $PWD/zsh/zshrc ~/.zshrc
@@ -18,7 +17,3 @@ ln -s -i $PWD/i3/scripts ~/.config/i3/
 # dunst
 mkdir -p ~/.config/dunst
 ln -s -i $PWD/dunstrc ~/.config/dunst/dunstrc
-
-# alacritty
-mkdir -p ~/.config/alacritty
-ln -s -i $PWD/alacritty.yml ~/.config/alacritty/alacritty.yml
