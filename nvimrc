@@ -493,6 +493,15 @@ formatter.setup({
                     stdin = true,
                 }
             end
+        },
+        proto = {
+            function()
+                return {
+                    exe = "clang-format-12",
+                    args = { "-" },
+                    stdin = true,
+                }
+            end
         }
     }
 })
