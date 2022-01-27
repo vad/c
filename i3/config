@@ -34,7 +34,7 @@ set $darkgray #1d2021
 
 # set window colors
 # class                 border|backgr|text|indicator|child_border
-client.focused          $blue $blue $darkgray $purple $darkgray
+client.focused          $yellow $yellow $darkgray $purple $darkgray
 client.focused_inactive $darkgray $darkgray $gray $purple $darkgray
 client.unfocused        $darkgray $darkgray $gray $purple $darkgray
 client.urgent           $red $red $white $red $red
