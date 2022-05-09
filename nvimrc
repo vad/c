@@ -13,7 +13,9 @@ Plug 'airblade/vim-gitgutter'
 Plug 'tpope/vim-fugitive'
 Plug 'shumphrey/fugitive-gitlab.vim'
 
-Plug 'itchyny/lightline.vim'
+Plug 'nvim-lualine/lualine.nvim'
+" If you want to have icons in your statusline choose one of these
+Plug 'kyazdani42/nvim-web-devicons'
 
 " { 'do': ':GoUpdateBinaries' }
 Plug 'fatih/vim-go'
@@ -21,8 +23,6 @@ Plug 'fatih/vim-go'
 Plug 'pearofducks/ansible-vim'
 
 Plug 'ntpeters/vim-better-whitespace'
-
-Plug 'martinda/Jenkinsfile-vim-syntax'
 
 Plug 'scrooloose/nerdtree'
 
@@ -99,9 +99,8 @@ colorscheme gruvbox
 " recently opened files, :History uses it
 set viminfo='1000
 
-nmap <Leader>; :Buffers<CR>
-nmap <Leader>t :GFiles<CR>
-nmap <Leader>r :Tags<CR>
+nmap <space>; :Buffers<CR>
+nmap <space>t :GFiles<CR>
 
 nmap <M-k>    :Ack! "\b<cword>\b" <CR>
 nmap <Esc>k   :Ack! "\b<cword>\b" <CR>
@@ -219,9 +218,17 @@ let g:fugitive_gitlab_domains = ['https://scanzia.spaziodati.eu']
 " ================== GIT-GUTTER =================
 set updatetime=250
 
-" ================== LIGHTLINE ==================
+" ================== LUALINE ==================
 set laststatus=2
 set noshowmode " don't show -- INSERT -- at the bottom, it's already in the statusline
+
+lua << END
+require('lualine').setup {
+    options = {
+        globalstatus = true
+    }
+}
+END
 
 " ===================== GO ====================
 
@@ -282,7 +289,7 @@ nmap <silent> t<C-g> :TestVisit<CR>
 " treesitter
 lua <<EOF
 require'nvim-treesitter.configs'.setup {
-  ensure_installed = "maintained", -- one of "all", "maintained" (parsers with maintainers), or a list of languages
+  ensure_installed = "all",
   ignore_install = { "zig" },
   highlight = {
     enable = true
@@ -356,7 +363,7 @@ cmp.setup {
         ['<C-d>'] = cmp.mapping.scroll_docs(-4),
         ['<C-f>'] = cmp.mapping.scroll_docs(4),
         ['<C-Space>'] = cmp.mapping.complete(),
-        ['<C-e>'] = cmp.mapping.close(),
+        ['<C-e>'] = cmp.mapping.abort(),
         ['<Tab>'] = cmp.mapping.confirm({select = true}),
         ['<CR>'] = cmp.mapping.confirm({select = true}),
 --      ["<Tab>"] = cmp.mapping(function(fallback)
@@ -368,13 +375,15 @@ cmp.setup {
 --              fallback()
 --          end
 --      end, {"i", "s"}),
-        ["<S-Tab>"] = cmp.mapping(function(fallback)
-            if vim.fn.pumvisible() == 1 then
-                vim.fn.feedkeys(t("<C-p>"), "n")
-            else
-                fallback()
-            end
-        end, {"i", "s"})
+--        ["<S-Tab>"] = cmp.mapping(function(fallback)
+--            if vim.fn.pumvisible() == 1 then
+--                vim.fn.feedkeys(t("<C-p>"), "n")
+--            else
+--                fallback()
+--            end
+--        end, {"i", "s"})
+        ["<C-n>"] = cmp.mapping.select_next_item(),
+        ["<C-p>"] = cmp.mapping.select_prev_item(),
     },
     sources = {
         {name = 'nvim_lsp'},
@@ -384,7 +393,7 @@ cmp.setup {
         {name = "nvim_lua"},
         {name = "spell"},
         -- buffer can be slow, ocio!
-        {name = 'buffer', keyword_length = 5},
+        {name = 'buffer', keyword_length = 3},
     },
     completion = {completeopt = 'menu,menuone,noinsert'},
     experimental = {
