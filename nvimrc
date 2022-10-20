@@ -46,8 +46,9 @@ Plug 'robbles/logstash.vim'
 Plug 'uarun/vim-protobuf'
 
 " lsp
+Plug 'williamboman/mason.nvim'
+Plug 'williamboman/mason-lspconfig.nvim'
 Plug 'neovim/nvim-lspconfig'
-Plug 'williamboman/nvim-lsp-installer'
 
 " Install nvim-cmp
 Plug 'hrsh7th/nvim-cmp'
@@ -75,6 +76,7 @@ Plug 'ziglang/zig.vim'
 Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
 Plug 'nvim-treesitter/playground'
 Plug 'nvim-treesitter/nvim-treesitter-textobjects'
+Plug 'nvim-treesitter/nvim-treesitter-context'
 
 Plug 'mhartington/formatter.nvim'
 
@@ -316,7 +318,12 @@ EOF
 
 " LSP
 lua <<EOF
-require'lspconfig'.pyright.setup{}
+require("mason").setup()
+
+local mason_lspconfig = require("mason-lspconfig")
+mason_lspconfig.setup({
+    ensure_installed = { "denols", "gopls", "jsonnet_ls", "pyright", "terraformls", "tsserver" }
+})
 
 -- cmp
 local cmp = require'cmp'
@@ -382,8 +389,8 @@ cmp.setup {
 --                fallback()
 --            end
 --        end, {"i", "s"})
-        ["<C-n>"] = cmp.mapping.select_next_item(),
-        ["<C-p>"] = cmp.mapping.select_prev_item(),
+        ['<Down>'] = cmp.mapping(cmp.mapping.select_next_item({ behavior = cmp.SelectBehavior.Select }), {'i'}),
+        ['<Up>'] = cmp.mapping(cmp.mapping.select_prev_item({ behavior = cmp.SelectBehavior.Select }), {'i'}),
     },
     sources = {
         {name = 'nvim_lsp'},
@@ -402,8 +409,7 @@ cmp.setup {
     }
 }
 
-local capabilities = vim.lsp.protocol.make_client_capabilities()
-capabilities = require('cmp_nvim_lsp').update_capabilities(capabilities)
+local capabilities = require('cmp_nvim_lsp').default_capabilities()
 
 local nvim_lsp = require('lspconfig')
 
@@ -440,28 +446,24 @@ local on_attach = function(client, bufnr)
 
 end
 
-local lsp_installer = require("nvim-lsp-installer")
+mason_lspconfig.setup_handlers({
+    function (server_name)
+        local opts = {
+            on_attach = on_attach,
+            capabilities = capabilities,
+        }
 
--- Register a handler that will be called for all installed servers.
--- Alternatively, you may also register handlers on specific server instances instead (see example below).
-lsp_installer.on_server_ready(function(server)
-    local opts = {
-        on_attach = on_attach,
-        capabilities = capabilities,
-    }
+        if server_name == "tsserver" then
+            opts.root_dir = nvim_lsp.util.root_pattern("package.json")
+        end
 
-    if server.name == "tsserver" then
-        opts.root_dir = nvim_lsp.util.root_pattern("package.json")
+        if server_name == "denols" then
+            opts.root_dir = nvim_lsp.util.root_pattern("deno.json")
+        end
+
+        require("lspconfig")[server_name].setup(opts)
     end
-
-    if server.name == "denols" then
-        opts.root_dir = nvim_lsp.util.root_pattern("deno.json")
-    end
-
-    -- This setup() function is exactly the same as lspconfig's setup function.
-    -- Refer to https://github.com/neovim/nvim-lspconfig/blob/master/doc/server_configurations.md
-    server:setup(opts)
-end)
+})
 EOF
 
 
@@ -476,8 +478,8 @@ formatter.setup({
             -- prettier
             function()
                 return {
-                    exe = "prettier",
-                    args = {"--stdin-filepath", vim.fn.fnameescape(vim.api.nvim_buf_get_name(0)), '--single-quote'},
+                    exe = "npx",
+                    args = {"prettier", "--stdin-filepath", vim.fn.fnameescape(vim.api.nvim_buf_get_name(0)), '--single-quote'},
                     stdin = true
                 }
             end
