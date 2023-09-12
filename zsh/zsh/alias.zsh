@@ -6,6 +6,8 @@ alias grep='grep --color'
 alias pull="git pull --rebase"
 
 alias vim="nvim -O"
+alias v=vim
+alias vimdiff="vim -d"
 
 alias pbcopy='xclip -selection clipboard'
 alias pbpaste='xclip -selection clipboard -o'
@@ -23,7 +25,6 @@ alias ave='aws-vault exec'
 
 alias tf=terraform
 alias k=kubectl
-alias v=vim
-alias vimdiff="vim -d"
 
 alias hg="kitty +kitten hyperlinked_grep"
+alias rg="rg -S"

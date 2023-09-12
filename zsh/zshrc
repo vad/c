@@ -58,7 +58,7 @@ ZSH_THEME="powerlevel10k/powerlevel10k"
 # Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
-plugins=(git pimento virtualenvwrapper asdf)
+plugins=(git pimento asdf poetry)
 
 # User configuration
 
@@ -86,10 +86,11 @@ export EDITOR='vim'
 
 # ssh
 # export SSH_KEY_PATH="~/.ssh/dsa_id"
+export SSH_AUTH_SOCK=$XDG_RUNTIME_DIR/ssh-agent.socket
 
 export GOPATH=$HOME/data/GOPATH
-export PATH="$GOPATH/bin:$PATH:/usr/local/go/bin"
-# export PATH="$GOPATH/bin:$PATH"
+# export PATH="$GOPATH/bin:$PATH:/usr/local/go/bin"
+export PATH="$GOPATH/bin:$PATH"
 
 source $HOME/.zsh/alias.zsh
 
@@ -138,3 +139,7 @@ fi
 
 
 eval "$(fasd --init auto)"
+
+export VAULT_ADDR=https://comare.spaziodati.eu:8200
+
+export AWS_DEFAULT_REGION=eu-west-1
