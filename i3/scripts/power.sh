@@ -41,7 +41,7 @@ then
         $($USE_LOCKER) && "$LOCKER"; systemctl hibernate
         ;;
       Lock)
-        ~/.config/i3/scripts/lock.sh
+        xautolock -locknow
         ;;
       *)
         ;;

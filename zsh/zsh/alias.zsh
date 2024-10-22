@@ -26,5 +26,6 @@ alias ave='aws-vault exec'
 alias tf=terraform
 alias k=kubectl
 
-alias hg="kitty +kitten hyperlinked_grep"
-alias rg="rg -S"
+alias rg="rg -S --hyperlink-format=kitty"
+
+alias dive="docker run -ti --rm  -v /var/run/docker.sock:/var/run/docker.sock wagoodman/dive"

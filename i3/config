@@ -54,7 +54,7 @@ bindsym $mod+Shift+q kill
 bindsym $mod+Shift+d exec --no-startup-id "rofi -modi drun -show drun"
 bindsym $mod+d exec --no-startup-id "rofi -modi run -show run"
 bindsym $mod+Tab exec --no-startup-id "rofi -modi window -show window"
-bindsym $mod+c exec --no-startup-id "rofi -modi calc -show calc"
+bindsym $mod+c exec --no-startup-id "LC_NUMERIC=en_US.UTF-8 rofi -modi calc -show calc"
 # There also is the (new) i3-dmenu-desktop which only displays applications
 # shipping a .desktop file. It is a wrapper around dmenu, so you need that
 # installed.
@@ -248,7 +248,7 @@ exec --no-startup-id /usr/bin/xfce4-clipman
 bindsym $mod+Shift+v exec --no-startup-id /usr/bin/xfce4-popup-clipman
 # lock the screen on suspend
 exec --no-startup-id xss-lock -- ~/.config/i3/scripts/lock.sh
-exec --no-startup-id xautolock -time 5 -locker ~/.config/i3/scripts/lock.sh
+exec --no-startup-id xautolock -time 5 -locker ~/.config/i3/scripts/lock.sh -corners '--00' -cornerredelay 3600 -cornerdelay 1 -notify 15 -notifier "notify-send -u critical -t 10000 -- 'LOCKING SCREEN'"
 exec --no-startup-id /usr/bin/system-config-printer-applet
 exec --no-startup-id /usr/bin/blueman-applet
 exec --no-startup-id /usr/bin/dunst

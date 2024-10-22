@@ -27,6 +27,7 @@ require("lazy").setup({
 		"lewis6991/gitsigns.nvim",
 		config = function()
 			require("gitsigns").setup()
+			-- require("scrollbar.handlers.gitsigns").setup()
 		end,
 	},
 
@@ -60,9 +61,8 @@ require("lazy").setup({
 		dependencies = { "tpope/vim-repeat" },
 	},
 
-	"vim-scripts/restore_view.vim",
-
-	"tpope/vim-commentary",
+	-- disabilitato perché scazza la current working directory
+	-- "vim-scripts/restore_view.vim",
 
 	-- filetypes
 	"pearofducks/ansible-vim",
@@ -72,6 +72,7 @@ require("lazy").setup({
 	"robbles/logstash.vim",
 	"uarun/vim-protobuf",
 	"ziglang/zig.vim",
+	"towolf/vim-helm",
 
 	-- lsp
 	"williamboman/mason.nvim",
@@ -84,6 +85,7 @@ require("lazy").setup({
 	"hrsh7th/cmp-vsnip",
 	"hrsh7th/vim-vsnip",
 	"hrsh7th/vim-vsnip-integ",
+	{ "rafamadriz/friendly-snippets" },
 
 	-- Install the buffer completion source
 	"hrsh7th/cmp-buffer",
@@ -109,10 +111,83 @@ require("lazy").setup({
 			{ "nvim-lua/plenary.nvim" },
 			{ "nvim-telescope/telescope-live-grep-args.nvim" },
 		},
+		config = function()
+			require("telescope").load_extension("fzf")
+			require("telescope").load_extension("live_grep_args")
+		end,
 	},
 	{ "nvim-telescope/telescope-fzf-native.nvim", build = "make" },
 
-	{ "j-hui/fidget.nvim", tag = "legacy" },
-
 	"dstein64/vim-startuptime",
+
+	{
+		"folke/trouble.nvim",
+		dependencies = { "nvim-tree/nvim-web-devicons" },
+		cmd = "Trouble",
+		config = function()
+			vim.keymap.set("n", "<leader>xx", function()
+				require("trouble").open()
+			end)
+			vim.keymap.set("n", "<leader>xw", function()
+				require("trouble").open("workspace_diagnostics")
+			end)
+			vim.keymap.set("n", "<leader>xd", function()
+				require("trouble").open("document_diagnostics")
+			end)
+			vim.keymap.set("n", "<leader>xq", function()
+				require("trouble").open("quickfix")
+			end)
+			vim.keymap.set("n", "<leader>xl", function()
+				require("trouble").open("loclist")
+			end)
+			vim.keymap.set("n", "gR", function()
+				require("trouble").open("lsp_references")
+			end)
+			vim.keymap.set("n", "<leader>n", function()
+				require("trouble").next({ skip_groups = true, jump = true })
+			end)
+			vim.keymap.set("n", "<leader>p", function()
+				require("trouble").previous({ skip_groups = true, jump = true })
+			end)
+
+			vim.keymap.set("n", "<M-3>", ":TroubleToggle<CR>")
+		end,
+	},
+
+	-- DISABLED BECAUSE OF https://github.com/petertriho/nvim-scrollbar/issues/99
+	-- {
+	-- 	"petertriho/nvim-scrollbar",
+	-- 	config = function()
+	-- 		require("scrollbar").setup()
+	-- 	end,
+	-- },
+	-- {
+	-- 	"kevinhwang91/nvim-hlslens",
+	-- 	config = function()
+	-- 		-- require('hlslens').setup() is not required
+	-- 		require("scrollbar.handlers.search").setup({
+	-- 			-- hlslens config overrides
+	-- 		})
+	-- 	end,
+	-- },
+	{
+		"nvim-pack/nvim-spectre",
+		dependencies = { "nvim-lua/plenary.nvim" },
+		config = {
+			vim.keymap.set("n", "<leader>S", '<cmd>lua require("spectre").toggle()<CR>', {
+				desc = "Toggle Spectre",
+			}),
+		},
+	},
+	{
+		"DanieleIsoni/py-package-info.nvim",
+		config = {
+			vim.api.nvim_set_keymap(
+				"n",
+				"<leader>ps",
+				"<cmd>lua require('py-package-info').show()<cr>",
+				{ silent = true, noremap = true }
+			),
+		},
+	},
 })

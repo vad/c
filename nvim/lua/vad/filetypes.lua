@@ -43,3 +43,11 @@ vim.api.nvim_create_autocmd({ "BufRead", "BufNewFile" }, {
 		vim.opt_local.filetype = "systemd"
 	end,
 })
+
+-- logstash with jinja2
+vim.api.nvim_create_autocmd({ "BufRead", "BufNewFile" }, {
+	pattern = { "*logstash/*.conf.j2" },
+	callback = function()
+		vim.opt_local.filetype = "logstash.jinja2"
+	end,
+})

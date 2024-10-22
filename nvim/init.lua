@@ -55,8 +55,7 @@ vim.keymap.set("v", "<C-c>", '"+y')
 
 -- vimtree
 vim.keymap.set("n", "<M-1>", ":NvimTreeToggle<CR>")
-vim.keymap.set("n", "<Esc>!", ":NvimTreeFindFileToggle<CR>")
-vim.keymap.set("n", "<leader>1", ":NvimTreeFindFileToggle<CR>")
+vim.keymap.set("n", "<Esc>!", ":NvimTreeFindFileToggle!<CR>")
 
 -- whitespaces
 vim.g.strip_whitespace_on_save = 1

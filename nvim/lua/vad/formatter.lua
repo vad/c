@@ -19,8 +19,36 @@ formatter.setup({
 			end,
 		},
 		python = {
-			require("formatter.filetypes.python").black,
-			require("formatter.filetypes.python").isort,
+			-- Use black when available
+			function()
+				if vim.fn.executable("black") == 1 then
+					local util = require("formatter.util")
+					return {
+						exe = "black",
+						args = { "-q", "--stdin-filename", util.escape_path(util.get_current_buffer_file_name()), "-" },
+						stdin = true,
+					}
+				end
+			end,
+			-- Use ruff when available
+			function()
+				if vim.fn.executable("ruff") == 1 then
+					return {
+						exe = "ruff",
+						args = { "check", "--fix", "--exit-zero", "--stdin-filename", "%:p" },
+						stdin = true,
+					}
+				end
+			end,
+			function()
+				if vim.fn.executable("ruff") == 1 then
+					return {
+						exe = "ruff",
+						args = { "format", "--stdin-filename", "%:p" },
+						stdin = true,
+					}
+				end
+			end,
 		},
 		javascript = {
 			require("formatter.defaults.denofmt"),
@@ -68,5 +96,6 @@ vim.cmd([[
       autocmd BufWritePost *.jsonnet,*.libsonnet FormatWrite
       autocmd BufWritePost *.lua FormatWrite
       autocmd BufWritePost *.py FormatWrite
+      autocmd BufWritePost *.tf FormatWrite
     augroup END
 ]])

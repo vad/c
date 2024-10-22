@@ -58,11 +58,11 @@ ZSH_THEME="powerlevel10k/powerlevel10k"
 # Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
-plugins=(git pimento asdf poetry)
+plugins=(git asdf poetry)
 
 # User configuration
 
-export PATH="$HOME/.local/bin:/home/linuxbrew/.linuxbrew/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:$HOME/.platformio/penv/bin:/snap/bin:${HOME}/.krew/bin"
+export PATH="$HOME/.local/bin:$HOME/.local/kitty.app/bin/:/home/linuxbrew/.linuxbrew/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:$HOME/.platformio/penv/bin:/snap/bin:${HOME}/.krew/bin"
 # export MANPATH="/usr/local/man:$MANPATH"
 export WORKON_HOME=$HOME/.virtualenvs
 # export VIRTUALENVWRAPPER_PYTHON=/usr/bin/python
@@ -73,13 +73,7 @@ source $ZSH/oh-my-zsh.sh
 # export LANG=en_US.UTF-8
 export LANGUAGE=en LC_ALL=en_US.UTF-8
 
-# Preferred editor for local and remote sessions
-# if [[ -n $SSH_CONNECTION ]]; then
-#   export EDITOR='vim'
-# else
-#   export EDITOR='mvim'
-# fi
-export EDITOR='vim'
+export EDITOR='nvim'
 
 # Compilation flags
 # export ARCHFLAGS="-arch x86_64"
@@ -143,3 +137,4 @@ eval "$(fasd --init auto)"
 export VAULT_ADDR=https://comare.spaziodati.eu:8200
 
 export AWS_DEFAULT_REGION=eu-west-1
+eval "$(/home/vad/.cache/pypoetry/virtualenvs/pimento-Z2twXl2C-py3.10/bin/register-python-argcomplete pim)"

@@ -4,7 +4,17 @@ require("mason").setup()
 
 local mason_lspconfig = require("mason-lspconfig")
 mason_lspconfig.setup({
-	ensure_installed = { "denols", "gopls", "jsonnet_ls", "pyright", "terraformls", "tsserver" },
+	ensure_installed = {
+		"bashls",
+		"denols",
+		"gopls",
+		"jsonnet_ls",
+		"lua_ls",
+		"pyright",
+		"ruff_lsp",
+		"terraformls",
+		"vimls",
+	},
 })
 
 -- cmp
@@ -17,6 +27,16 @@ end
 local check_back_space = function()
 	local col = vim.fn.col(".") - 1
 	return col == 0 or vim.fn.getline("."):sub(col, col):match("%s") ~= nil
+end
+
+local has_words_before = function()
+	unpack = unpack or table.unpack
+	local line, col = unpack(vim.api.nvim_win_get_cursor(0))
+	return col ~= 0 and vim.api.nvim_buf_get_lines(0, line - 1, line, true)[1]:sub(col, col):match("%s") == nil
+end
+
+local feedkey = function(key, mode)
+	vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes(key, true, true, true), mode, true)
 end
 
 cmp.setup({
@@ -40,36 +60,35 @@ cmp.setup({
 		}),
 	},
 	mapping = {
-		["<C-p>"] = cmp.mapping.select_prev_item(),
-		["<C-n>"] = cmp.mapping.select_next_item(),
+		-- ["<C-p>"] = cmp.mapping.select_prev_item(),
+		-- ["<C-n>"] = cmp.mapping.select_next_item(),
 		["<C-d>"] = cmp.mapping.scroll_docs(-4),
 		["<C-f>"] = cmp.mapping.scroll_docs(4),
 		["<C-Space>"] = cmp.mapping.complete(),
 		["<C-e>"] = cmp.mapping.abort(),
-		["<Tab>"] = cmp.mapping.confirm({ select = true }),
+		["<Tab>"] = cmp.mapping(function(fallback)
+			if cmp.visible() then
+				cmp.confirm({ select = true })
+			elseif vim.fn["vsnip#available"](1) == 1 then
+				feedkey("<Plug>(vsnip-expand-or-jump)", "")
+			elseif has_words_before() then
+				cmp.complete()
+			else
+				fallback() -- The fallback function sends a already mapped key. In this case, it's probably `<Tab>`.
+			end
+		end, { "i", "s" }),
+		["<S-Tab>"] = cmp.mapping(function()
+			if vim.fn["vsnip#jumpable"](-1) == 1 then
+				feedkey("<Plug>(vsnip-jump-prev)", "")
+			end
+		end, { "i", "s" }),
 		["<CR>"] = cmp.mapping.confirm({ select = true }),
-		--      ["<Tab>"] = cmp.mapping(function(fallback)
-		--          if vim.fn.pumvisible() == 1 then
-		--              vim.fn.feedkeys(t("<C-n>"), "n")
-		--          elseif check_back_space() then
-		--              vim.fn.feedkeys(t("<tab>"), "n")
-		--          else
-		--              fallback()
-		--          end
-		--      end, {"i", "s"}),
-		--        ["<S-Tab>"] = cmp.mapping(function(fallback)
-		--            if vim.fn.pumvisible() == 1 then
-		--                vim.fn.feedkeys(t("<C-p>"), "n")
-		--            else
-		--                fallback()
-		--            end
-		--        end, {"i", "s"})
 		["<Down>"] = cmp.mapping(cmp.mapping.select_next_item({ behavior = cmp.SelectBehavior.Select }), { "i" }),
 		["<Up>"] = cmp.mapping(cmp.mapping.select_prev_item({ behavior = cmp.SelectBehavior.Select }), { "i" }),
 	},
 	sources = {
 		{ name = "nvim_lsp" },
-		{ name = "vsnip" },
+		-- { name = "vsnip" },  -- gives errors in terraform files
 		{ name = "path" },
 		{ name = "treesitter" },
 		{ name = "nvim_lua" },
@@ -110,6 +129,10 @@ local on_attach = function(client, bufnr)
 		vim.api.nvim_buf_set_option(bufnr, ...)
 	end
 
+	-- if client.name == "pyright" then
+	-- 	client.server_capabilities.codeActionProvider = false
+	-- end
+
 	--Enable completion triggered by <c-x><c-o>
 	buf_set_option("omnifunc", "v:lua.vim.lsp.omnifunc")
 
@@ -118,7 +141,7 @@ local on_attach = function(client, bufnr)
 
 	-- See `:help vim.lsp.*` for documentation on any of the below functions
 	buf_set_keymap("n", "gD", "<cmd>lua vim.lsp.buf.declaration()<CR>", opts)
-	buf_set_keymap("n", "gd", "<cmd>lua vim.lsp.buf.definition()<CR>", opts)
+	-- buf_set_keymap("n", "gd", "<cmd>lua vim.lsp.buf.definition()<CR>", opts)
 	buf_set_keymap("n", "K", "<cmd>lua vim.lsp.buf.hover()<CR>", opts)
 	buf_set_keymap("n", "gi", "<cmd>lua vim.lsp.buf.implementation()<CR>", opts)
 	buf_set_keymap("n", "<C-k>", "<cmd>lua vim.lsp.buf.signature_help()<CR>", opts)
@@ -128,7 +151,7 @@ local on_attach = function(client, bufnr)
 	buf_set_keymap("n", "<space>D", "<cmd>lua vim.lsp.buf.type_definition()<CR>", opts)
 	buf_set_keymap("n", "<space>rn", "<cmd>lua vim.lsp.buf.rename()<CR>", opts)
 	buf_set_keymap("n", "<space>ca", "<cmd>lua vim.lsp.buf.code_action()<CR>", opts)
-	buf_set_keymap("n", "gr", "<cmd>lua vim.lsp.buf.references()<CR>", opts)
+	-- buf_set_keymap("n", "gr", "<cmd>lua vim.lsp.buf.references()<CR>", opts)
 	buf_set_keymap("n", "<space>e", "<cmd>lua vim.diagnostic.open_float()<CR>", opts)
 	buf_set_keymap("n", "[d", "<cmd>lua vim.diagnostic.goto_prev()<CR>", opts)
 	buf_set_keymap("n", "]d", "<cmd>lua vim.diagnostic.goto_next()<CR>", opts)
@@ -165,5 +188,3 @@ mason_lspconfig.setup_handlers({
 		require("lspconfig")[server_name].setup(opts)
 	end,
 })
-
-require("fidget").setup({})
