@@ -15,13 +15,24 @@ vim.opt.rtp:prepend(lazypath)
 
 require("lazy").setup({
 	{
-		"ellisonleao/gruvbox.nvim",
-		lazy = false,
-		priority = 1000, -- make sure to load this before all the other start plugins
+		"catppuccin/nvim",
+		name = "catppuccin",
+		priority = 1000,
 		config = function()
-			vim.cmd.colorscheme("gruvbox")
+			vim.o.background = "dark"
+			vim.cmd.colorscheme("catppuccin-mocha")
 		end,
 	},
+
+	-- {
+	-- 	"ellisonleao/gruvbox.nvim",
+	-- 	lazy = false,
+	-- 	priority = 1000, -- make sure to load this before all the other start plugins
+	-- 	config = function()
+	-- 		vim.o.background = "dark"
+	-- 		vim.cmd.colorscheme("gruvbox")
+	-- 	end,
+	-- },
 
 	{
 		"lewis6991/gitsigns.nvim",
@@ -34,6 +45,9 @@ require("lazy").setup({
 	{
 		"tpope/vim-fugitive",
 		dependencies = { "shumphrey/fugitive-gitlab.vim" },
+		config = function()
+			vim.g.fugitive_gitlab_domains = { "https://scanzia.spaziodati.eu" }
+		end,
 	},
 
 	{
@@ -68,7 +82,20 @@ require("lazy").setup({
 	"pearofducks/ansible-vim",
 	"amadeus/vim-mjml",
 	"hashivim/vim-terraform",
-	"fatih/vim-go",
+	{
+		"ray-x/go.nvim",
+		dependencies = { -- optional packages
+			"ray-x/guihua.lua",
+			"neovim/nvim-lspconfig",
+			"nvim-treesitter/nvim-treesitter",
+		},
+		config = function()
+			require("go").setup()
+		end,
+		event = { "CmdlineEnter" },
+		ft = { "go", "gomod" },
+		build = ':lua require("go.install").update_all_sync()', -- if you need to install/update all binaries
+	},
 	"robbles/logstash.vim",
 	"uarun/vim-protobuf",
 	"ziglang/zig.vim",

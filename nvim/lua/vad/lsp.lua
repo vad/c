@@ -11,7 +11,7 @@ mason_lspconfig.setup({
 		"jsonnet_ls",
 		"lua_ls",
 		"pyright",
-		"ruff_lsp",
+		"ruff",
 		"terraformls",
 		"vimls",
 	},
