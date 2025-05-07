@@ -2,7 +2,8 @@ local vim = vim
 
 vim.g.mapleader = " "
 
-require("vad.packages")
+require("config.lazy")
+
 require("vad.filetypes")
 require("vad.opts")
 require("vad.treesitter")

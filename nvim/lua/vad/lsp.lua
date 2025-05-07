@@ -2,8 +2,7 @@ local vim = vim
 
 require("mason").setup()
 
-local mason_lspconfig = require("mason-lspconfig")
-mason_lspconfig.setup({
+require("mason-lspconfig").setup({
 	ensure_installed = {
 		"bashls",
 		"denols",
@@ -14,20 +13,32 @@ mason_lspconfig.setup({
 		"ruff",
 		"terraformls",
 		"vimls",
+		"clangd",
 	},
+	automatic_enable = true,
 })
+
+vim.lsp.config.jsonnet_ls = {
+	cmd = {
+		"jsonnet-language-server",
+		"--jpath",
+		"/home/vad/Source/SpazioDati/pimento/k8s-libs",
+	},
+}
+
+vim.lsp.config.denols = {
+	root_markers = { "deno.json", "deno.jsonc", "denops" },
+}
+
+vim.lsp.config.tsserver = {
+	root_markers = { "package.json" },
+}
+
+-- required until jsonnet_ls is removed from https://github.com/neovim/nvim-lspconfig/issues/3705
+require("lspconfig").jsonnet_ls.setup({})
 
 -- cmp
 local cmp = require("cmp")
-
-local t = function(str)
-	return vim.api.nvim_replace_termcodes(str, true, true, true)
-end
-
-local check_back_space = function()
-	local col = vim.fn.col(".") - 1
-	return col == 0 or vim.fn.getline("."):sub(col, col):match("%s") ~= nil
-end
 
 local has_words_before = function()
 	unpack = unpack or table.unpack
@@ -85,6 +96,7 @@ cmp.setup({
 		["<CR>"] = cmp.mapping.confirm({ select = true }),
 		["<Down>"] = cmp.mapping(cmp.mapping.select_next_item({ behavior = cmp.SelectBehavior.Select }), { "i" }),
 		["<Up>"] = cmp.mapping(cmp.mapping.select_prev_item({ behavior = cmp.SelectBehavior.Select }), { "i" }),
+		-- ["<A-y>"] = require("minuet").make_cmp_map(),
 	},
 	sources = {
 		{ name = "nvim_lsp" },
@@ -93,6 +105,10 @@ cmp.setup({
 		{ name = "treesitter" },
 		{ name = "nvim_lua" },
 		{ name = "spell" },
+
+		-- this would add minuet to standard cmp completion. I prefer to trigger it with a special mapping instead
+		-- { name = "minuet" },
+
 		-- buffer can be slow, ocio!
 		{
 			name = "buffer",
@@ -115,76 +131,33 @@ cmp.setup({
 	},
 })
 
-local capabilities = require("cmp_nvim_lsp").default_capabilities()
-
-local nvim_lsp = require("lspconfig")
-
--- Use an on_attach function to only map the following keys
--- after the language server attaches to the current buffer
-local on_attach = function(client, bufnr)
-	local function buf_set_keymap(...)
-		vim.api.nvim_buf_set_keymap(bufnr, ...)
-	end
-	local function buf_set_option(...)
-		vim.api.nvim_buf_set_option(bufnr, ...)
-	end
-
-	-- if client.name == "pyright" then
-	-- 	client.server_capabilities.codeActionProvider = false
-	-- end
-
-	--Enable completion triggered by <c-x><c-o>
-	buf_set_option("omnifunc", "v:lua.vim.lsp.omnifunc")
-
-	-- Mappings.
-	local opts = { noremap = true, silent = true }
-
-	-- See `:help vim.lsp.*` for documentation on any of the below functions
-	buf_set_keymap("n", "gD", "<cmd>lua vim.lsp.buf.declaration()<CR>", opts)
-	-- buf_set_keymap("n", "gd", "<cmd>lua vim.lsp.buf.definition()<CR>", opts)
-	buf_set_keymap("n", "K", "<cmd>lua vim.lsp.buf.hover()<CR>", opts)
-	buf_set_keymap("n", "gi", "<cmd>lua vim.lsp.buf.implementation()<CR>", opts)
-	buf_set_keymap("n", "<C-k>", "<cmd>lua vim.lsp.buf.signature_help()<CR>", opts)
-	buf_set_keymap("n", "<space>wa", "<cmd>lua vim.lsp.buf.add_workspace_folder()<CR>", opts)
-	buf_set_keymap("n", "<space>wr", "<cmd>lua vim.lsp.buf.remove_workspace_folder()<CR>", opts)
-	buf_set_keymap("n", "<space>wl", "<cmd>lua print(vim.inspect(vim.lsp.buf.list_workspace_folders()))<CR>", opts)
-	buf_set_keymap("n", "<space>D", "<cmd>lua vim.lsp.buf.type_definition()<CR>", opts)
-	buf_set_keymap("n", "<space>rn", "<cmd>lua vim.lsp.buf.rename()<CR>", opts)
-	buf_set_keymap("n", "<space>ca", "<cmd>lua vim.lsp.buf.code_action()<CR>", opts)
-	-- buf_set_keymap("n", "gr", "<cmd>lua vim.lsp.buf.references()<CR>", opts)
-	buf_set_keymap("n", "<space>e", "<cmd>lua vim.diagnostic.open_float()<CR>", opts)
-	buf_set_keymap("n", "[d", "<cmd>lua vim.diagnostic.goto_prev()<CR>", opts)
-	buf_set_keymap("n", "]d", "<cmd>lua vim.diagnostic.goto_next()<CR>", opts)
-	buf_set_keymap("n", "<space>q", "<cmd>lua vim.diagnostic.setloclist()<CR>", opts)
-	buf_set_keymap("n", "<space>f", "<cmd>lua vim.lsp.buf.formatting()<CR>", opts)
-end
+-- keep as a reference. See default ones at https://gpanders.com/blog/whats-new-in-neovim-0-11/#more-default-mappings
+-- 	-- See `:help vim.lsp.*` for documentation on any of the below functions
+-- 	buf_set_keymap("n", "gD", "<cmd>lua vim.lsp.buf.declaration()<CR>", opts)
+-- 	buf_set_keymap("n", "gi", "<cmd>lua vim.lsp.buf.implementation()<CR>", opts)
+-- 	buf_set_keymap("n", "<C-k>", "<cmd>lua vim.lsp.buf.signature_help()<CR>", opts)
+-- 	buf_set_keymap("n", "<space>wa", "<cmd>lua vim.lsp.buf.add_workspace_folder()<CR>", opts)
+-- 	buf_set_keymap("n", "<space>wr", "<cmd>lua vim.lsp.buf.remove_workspace_folder()<CR>", opts)
+-- 	buf_set_keymap("n", "<space>wl", "<cmd>lua print(vim.inspect(vim.lsp.buf.list_workspace_folders()))<CR>", opts)
+-- 	buf_set_keymap("n", "<space>D", "<cmd>lua vim.lsp.buf.type_definition()<CR>", opts)
+-- 	buf_set_keymap("n", "<space>rn", "<cmd>lua vim.lsp.buf.rename()<CR>", opts)
+-- 	buf_set_keymap("n", "<space>ca", "<cmd>lua vim.lsp.buf.code_action()<CR>", opts)
+-- 	-- buf_set_keymap("n", "gr", "<cmd>lua vim.lsp.buf.references()<CR>", opts)
+-- 	buf_set_keymap("n", "<space>e", "<cmd>lua vim.diagnostic.open_float()<CR>", opts)
+-- 	buf_set_keymap("n", "[d", "<cmd>lua vim.diagnostic.goto_prev()<CR>", opts)
+-- 	buf_set_keymap("n", "]d", "<cmd>lua vim.diagnostic.goto_next()<CR>", opts)
+-- 	buf_set_keymap("n", "<space>q", "<cmd>lua vim.diagnostic.setloclist()<CR>", opts)
+-- 	buf_set_keymap("n", "<space>f", "<cmd>lua vim.lsp.buf.formatting()<CR>", opts)
+--
+-- 	buf_set_keymap("n", "<leader>L", "<cmd>lua vim.lsp.codelens.run()<CR>", opts)
+-- end
 
 vim.diagnostic.config({
-	virtual_text = {
-		-- show which LSP is giving the diagnostic
-		source = "always",
-	},
-})
-
-mason_lspconfig.setup_handlers({
-	function(server_name)
-		local opts = {
-			on_attach = on_attach,
-			capabilities = capabilities,
-		}
-
-		if server_name == "tsserver" then
-			opts.root_dir = nvim_lsp.util.root_pattern("package.json")
-		end
-
-		if server_name == "denols" then
-			opts.root_dir = nvim_lsp.util.root_pattern("deno.json")
-		end
-
-		if server_name == "jsonnet_ls" then
-			opts.cmd = { "jsonnet-language-server", "--jpath", "/home/vad/Source/SpazioDati/pimento/k8s-libs" }
-		end
-
-		require("lspconfig")[server_name].setup(opts)
-	end,
+	--- virtual_lines creates fake lines below the error
+	virtual_lines = true,
+	--- virtual_text shows errors on the same line
+	-- virtual_text = {
+	-- 	-- show which LSP is giving the diagnostic
+	-- 	source = true,
+	-- },
 })
