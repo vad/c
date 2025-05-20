@@ -34,9 +34,6 @@ vim.lsp.config.tsserver = {
 	root_markers = { "package.json" },
 }
 
--- required until jsonnet_ls is removed from https://github.com/neovim/nvim-lspconfig/issues/3705
-require("lspconfig").jsonnet_ls.setup({})
-
 -- cmp
 local cmp = require("cmp")
 
