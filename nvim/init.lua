@@ -9,7 +9,6 @@ require("vad.opts")
 require("vad.treesitter")
 require("vad.statusline")
 require("vad.lsp")
-require("vad.formatter")
 require("vad.telescope")
 require("vad.go")
 

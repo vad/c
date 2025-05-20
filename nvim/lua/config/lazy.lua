@@ -22,22 +22,6 @@ require("lazy").setup({
 		{ import = "plugins" },
 
 		{
-			"rebelot/kanagawa.nvim",
-			priority = 1000,
-			config = function()
-				require("kanagawa").setup({
-					background = { -- map the value of 'background' option to a theme
-						dark = "wave", -- try "dragon" !
-						light = "lotus",
-					},
-				})
-
-				-- setup must be called before loading
-				vim.cmd("colorscheme kanagawa")
-			end,
-		},
-
-		{
 			"nvim-lualine/lualine.nvim",
 			dependencies = { "nvim-tree/nvim-web-devicons" },
 		},
@@ -88,28 +72,10 @@ require("lazy").setup({
 		"ziglang/zig.vim",
 		"towolf/vim-helm",
 
-		-- This tiny plugin adds vscode-like pictograms to neovim built-in lsp
-		"onsails/lspkind-nvim",
-
 		{ "nvim-treesitter/nvim-treesitter", build = ":TSUpdate" },
 		"nvim-treesitter/playground",
 		"nvim-treesitter/nvim-treesitter-textobjects",
 		"nvim-treesitter/nvim-treesitter-context",
-
-		{ "mhartington/formatter.nvim" },
-
-		{
-			"nvim-telescope/telescope.nvim",
-			dependencies = {
-				{ "nvim-lua/plenary.nvim" },
-				{ "nvim-telescope/telescope-live-grep-args.nvim" },
-			},
-			config = function()
-				require("telescope").load_extension("fzf")
-				require("telescope").load_extension("live_grep_args")
-			end,
-		},
-		{ "nvim-telescope/telescope-fzf-native.nvim", build = "make" },
 
 		"dstein64/vim-startuptime",
 
