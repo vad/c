@@ -5,7 +5,7 @@
 
 # 2016 Oliver Kraitschy - http://okraits.de
 
-OPTIONS="Mono\nHome\nWork\nMirror-1080p"
+OPTIONS="Mono\nHome\nWork-Right\nWork-Left\nMirror-1080p"
 
 LAUNCHER="rofi -width 30 -dmenu -l 4 -i -no-custom -p display:"
 
@@ -16,8 +16,11 @@ then
       Mono)
         ~/.screenlayout/mono.sh
         ;;
-      Work)
-        ~/.screenlayout/work.sh
+      Work-Right)
+        ~/.screenlayout/work-right.sh
+        ;;
+      Work-Left)
+        ~/.screenlayout/work-left.sh
         ;;
       Home)
         ~/.screenlayout/home.sh

@@ -22,3 +22,6 @@ ln -s -i $PWD/i3/scripts ~/.config/i3/
 # dunst
 mkdir -p ~/.config/dunst
 ln -s -i $PWD/dunstrc ~/.config/dunst/dunstrc
+
+# screenlayout
+ln -s -i $PWD/screenlayout ~/.screenlayout
