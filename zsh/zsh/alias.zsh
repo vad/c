@@ -29,3 +29,5 @@ alias k=kubectl
 alias rg="rg -S --hyperlink-format=kitty"
 
 alias dive="docker run -ti --rm  -v /var/run/docker.sock:/var/run/docker.sock wagoodman/dive"
+
+alias fd=fdfind
