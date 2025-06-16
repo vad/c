@@ -5,7 +5,7 @@ require("mason").setup()
 require("mason-lspconfig").setup({
 	ensure_installed = {
 		"bashls",
-		"denols",
+		-- "denols",
 		"gopls",
 		"jsonnet_ls",
 		"lua_ls",
