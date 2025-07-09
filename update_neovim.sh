@@ -3,15 +3,24 @@
 # Exit on any error
 set -e
 
-# Fetch the latest release info from GitHub API
-echo "Fetching latest Neovim release info..."
+# Define colors
+GREEN='\033[0;32m'
+BLUE='\033[1;34m'
+YELLOW='\033[1;33m'
+RED='\033[0;31m'
+NC='\033[0m' # No Color
+
+echo -e "${BLUE}🔍 Fetching latest Neovim release info...${NC}"
 LATEST_JSON=$(curl -s https://api.github.com/repos/neovim/neovim/releases/latest)
 
 LATEST_VERSION=$(echo "$LATEST_JSON" | jq -r .tag_name)
 CURRENT_VERSION=$(nvim --version | head -1 | cut -d " " -f 2)
 
+echo -e "${YELLOW}🔎 Current version: ${CURRENT_VERSION}${NC}"
+echo -e "${YELLOW}📦 Latest version:  ${LATEST_VERSION}${NC}"
+
 if [[ $LATEST_VERSION == $CURRENT_VERSION ]]; then
-    echo "Neovim is up to date, exiting"
+    echo -e "${GREEN}✅ Neovim is already up to date! 🎉${NC}"
     exit 0
 fi
 
@@ -19,20 +28,18 @@ fi
 DOWNLOAD_URL=$(echo "$LATEST_JSON" | jq -r '.assets[] | select(.name == "nvim-linux-x86_64.appimage") | .browser_download_url')
 
 if [ -z "$DOWNLOAD_URL" ]; then
-  echo "Error: Could not find AppImage download URL."
+  echo -e "${RED}❌ Error: Could not find AppImage download URL.${NC}"
   exit 1
 fi
 
-# Download the AppImage to a temporary file
-echo "Downloading Neovim AppImage from $DOWNLOAD_URL..."
+echo -e "${BLUE}⬇️  Downloading Neovim AppImage...${NC}"
 curl -L "$DOWNLOAD_URL" -o nvim.appimage
 
-# Move it to /usr/local/bin/nvim
-echo "Installing Neovim to /usr/local/bin/nvim..."
+echo -e "${BLUE}📦 Installing Neovim to /usr/local/bin/nvim...${NC}"
 sudo mv nvim.appimage /usr/local/bin/nvim
 
-# Make it executable
-echo "Setting executable permissions..."
+echo -e "${BLUE}🔧 Setting executable permissions...${NC}"
 sudo chmod 755 /usr/local/bin/nvim
 
-echo "Neovim installation complete! Run 'nvim --version' to verify."
+echo -e "${GREEN}🎉 Neovim ${LATEST_VERSION} installed successfully!${NC}"
+echo -e "${GREEN}💡 Run 'nvim --version' to verify.${NC}"
