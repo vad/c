@@ -151,10 +151,11 @@ cmp.setup({
 
 vim.diagnostic.config({
 	--- virtual_lines creates fake lines below the error
-	virtual_lines = true,
+	-- WARNING: not working properly with :Git blame, will break alignment
+	-- virtual_lines = true,
 	--- virtual_text shows errors on the same line
-	-- virtual_text = {
-	-- 	-- show which LSP is giving the diagnostic
-	-- 	source = true,
-	-- },
+	virtual_text = {
+		-- show which LSP is giving the diagnostic
+		source = true,
+	},
 })

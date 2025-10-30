@@ -51,3 +51,10 @@ vim.api.nvim_create_autocmd({ "BufRead", "BufNewFile" }, {
 		vim.opt_local.filetype = "logstash.jinja2"
 	end,
 })
+
+-- gitlab CI
+vim.filetype.add({
+	pattern = {
+		["%.gitlab%-ci%.ya?ml"] = "yaml.gitlab",
+	},
+})

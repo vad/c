@@ -106,7 +106,7 @@ require("lazy").setup({
 					require("trouble").next({ skip_groups = true, jump = true })
 				end)
 				vim.keymap.set("n", "<leader>p", function()
-					require("trouble").previous({ skip_groups = true, jump = true })
+					require("trouble").prev({ skip_groups = true, jump = true })
 				end)
 
 				vim.keymap.set("n", "<M-3>", ":TroubleToggle<CR>")
