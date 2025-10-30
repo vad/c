@@ -1,13 +1,5 @@
 local vim = vim
 
--- jsonnet
-vim.api.nvim_create_autocmd({ "BufRead", "BufNewFile" }, {
-	pattern = { "*.jsonnet", "*.libsonnet" },
-	callback = function()
-		vim.opt_local.filetype = "jsonnet"
-	end,
-})
-
 -- Ansible
 vim.api.nvim_create_autocmd({ "BufRead", "BufNewFile" }, {
 	pattern = { "*/ansible/*.yml", "*/ansible-pull/*.yml" },
